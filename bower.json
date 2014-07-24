@@ -18,5 +18,10 @@
   ],
   "dependencies": {
     "jquery": "1.6.4"
-  }
+  },
+  "ignore": [
+    "package.json",
+    "Gruntfile.js",
+    "bower.json"
+  ]
 }
