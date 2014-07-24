@@ -17,7 +17,7 @@
     "tests",
     "package.json",
     "Gruntfile.js",
-    "bower.json",
+    "bower.json"
   ],
   "dependencies": {
     "jquery": "1.6.4"
