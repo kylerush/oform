@@ -180,13 +180,13 @@ $.fn.extend({
 
         if( invalidFields === 0 ){
 
-          $('body').removeClass('error');
+          $('body').removeClass('error-state');
 
           return true;
 
         } else {
 
-          $('body').addClass('error');
+          $('body').addClass('error-state');
 
           return false;
 
