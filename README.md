@@ -177,7 +177,7 @@ The function is passed one argument which is an object. The object contains
 one property named 'selector' and the value is the jQuery selector from when
 the plugin was initiated.
 
-###afterGlobal and afterLocal: function (required)
+###afterGlobal and afterLocal: function
 
 Similar to the before functions, these functions will run after the plugin is
 finished executing. This could be after validation errors occur or after the
