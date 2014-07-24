@@ -1,14 +1,14 @@
 {
   "name": "oForm",
   "main": "oform.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/kylerush/oform",
   "authors": [
     "Kyle Rush <kylerrush@gmail.com>"
   ],
   "description": "A JavaScript library for forms.",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
