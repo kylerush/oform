@@ -70,6 +70,8 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('test', ['prepTestFiles', 'css', 'connect', 'watch']);
+//gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
+
+gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
 gulp.task('build', ['lintJSON', 'lintJS', 'compress']);
