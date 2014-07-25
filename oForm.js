@@ -196,9 +196,7 @@ $.fn.extend({
 
     defaultOptions.submitData = function(){
 
-      var request;
-
-      request = $.ajax({
+      var request = $.ajax({
 
         type: 'POST',
         url: formSelector.attr('action') || settings.url,
@@ -206,7 +204,16 @@ $.fn.extend({
 
       });
 
-      request.always(function(){
+      request.always(function(request){
+
+        try{
+
+          request.responseJSON = $.parseJSON(request.responseText);
+
+        } catch(error){
+
+
+        }
 
         executeAfterCallbacks(request);
 

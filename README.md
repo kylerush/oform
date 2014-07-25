@@ -184,14 +184,18 @@ finished executing. This could be after validation errors occur or after the
 plugin received data from the XHR request.
 
 The local function executes first and is passed two arguments. The first is
-the response object from the jQuery jqXHR object XHR request. If no request
-was made the value of this argument will be undefined. The second argument is
-the afterGlobal function. If you have both an afterLocal and afterGlobal function
-then you need to execute the afterGlobal function by executing the argument when
-your afterLocal function is finished executing. This is because technically the
-plugin is still executing while the localAfter function is executing. If you don't
-have an afterGlobal function, this argument's value will be undefined. If you have
-only a globalAfter function, then plugin will execute it when it finishes since
-there is no localAfter function.
+the response object from the jQuery jqXHR object XHR request. The plugin adds an
+additional property to the jqXHR object named responseJSON and the value is the
+responseText formatted as JSON, assuming the response contained valid JSON. If
+the response did not contain valid JSON, the responseJSON property will not be
+defined. If no request was made the value of this argument will be undefined.
+The second argument is the afterGlobal function. If you have both an afterLocal
+and afterGlobal function then you need to execute the afterGlobal function by
+executing the argument when your afterLocal function is finished executing. This
+is because technically the plugin is still executing while the localAfter
+function is executing. If you don't have an afterGlobal function, this
+argument's value will be undefined. If you have only a globalAfter function,
+then plugin will execute it when it finishes since there is no localAfter
+function.
 
 Use these functions to create your success or failure handlers.
