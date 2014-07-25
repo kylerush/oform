@@ -16,8 +16,9 @@
     "test",
     "tests",
     "package.json",
-    "Gruntfile.js",
-    "bower.json"
+    "gulpfile.js",
+    "bower.json",
+    ".jshintrc"
   ],
   "dependencies": {
     "jquery": "1.6.4"
