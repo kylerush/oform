@@ -6,6 +6,9 @@ var jshint = require('gulp-jshint'),
   rename = require('gulp-rename'),
   header = require('gulp-header'),
   connect = require('gulp-connect'),
+  replace = require('gulp-replace'),
+  rename = require('gulp-rename'),
+  sass = require('gulp-sass'),
   gulp = require('gulp');
 
 gulp.task('lintJSON', function(){
@@ -15,9 +18,48 @@ gulp.task('lintJSON', function(){
 });
 
 gulp.task('lintJS', function(){
-  gulp.src('*.js')
+  gulp.src(['*/**.js', '!**/*.min.js', '!bower_components', '!node_modules'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
+});
+
+gulp.task('prepTestFiles', function(){
+  gulp.src('src/oForm.js')
+    .pipe(replace('/* expose default functions */', 'jQuery.oFormDefaultFunctions = defaultOptions;'))
+    .pipe(replace('/* expose combined function */', 'jQuery.oFormFunctions = settings;'))
+    .pipe(rename('oFormTest.js'))
+    .pipe(gulp.dest('tests/assets'));
+  gulp.src([
+    'bower_components/qunit/qunit/qunit.js',
+    'bower_components/qunit/qunit/qunit.css',
+    'bower_components/jquery/jquery.js',
+    'src/assets/scss/javascripts/bootstrap.js'
+    ])
+      .pipe(gulp.dest('tests/assets/'));
+});
+
+gulp.task('css', function(){
+  gulp.src('src/assets/scss/stylesheets/styles.scss')
+    .pipe(sass())
+    .pipe(gulp.dest('tests/assets/css/'));
+});
+
+gulp.task('connect', function(){
+  connect.server({
+    root: 'tests',
+    livereload: true
+  });
+});
+
+gulp.task('html', function(){
+  gulp.src('tests/*.html')
+    .pipe(connect.reload());
+});
+
+gulp.task('watch', function(){
+  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'html']);
+  gulp.watch(['src/**/*.scss'], ['css']);
+  gulp.watch(['tests/*.html'], ['prepTestFiles', 'html']);
 });
 
 gulp.task('compress', function(){
@@ -28,19 +70,6 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('test', function(){
-  gulp.src([
-    'bower_components/qunit/qunit/qunit.js',
-    'bower_components/qunit/qunit/qunit.css',
-    'bower_components/jquery/jquery.js',
-    'src/oForm.js'
-    ])
-      .pipe(gulp.dest('tests/assets/'));
-
-    connect.server({
-      root: 'tests',
-      livereload: true
-    });
-});
+gulp.task('test', ['prepTestFiles', 'css', 'connect', 'watch']);
 
 gulp.task('build', ['lintJSON', 'lintJS', 'compress']);

@@ -2,10 +2,13 @@
 <html>
   <head>
     <title>oForm QUnit tests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="assets/css/styles.css" type="text/css" media="screen">
     <link rel="stylesheet" href="assets/qunit.css" type="text/css" media="screen">
     <script src="assets/jquery.js"></script>
-    <script src="assets/oForm.js"></script>
+    <script src="assets/oFormTest.js"></script>
     <script src="assets/qunit.js"></script>
+    <!--<script src="assets/bootstrap.js"></script>-->
   </head>
   <body>
     <h1 id="qunit-header">QUnit Test Suite</h1>
@@ -13,51 +16,53 @@
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
-
-    <div>
-      <form method="POST" action="/whatever">
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name">
-        <input type="submit" value="Submit">
-      </form>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <p class=""></p>
+          <form method="POST" action="/whatever" role="form" novalidate>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" name="name" id="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control" name="url" id="url" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="phone" class="form-control" name="phone" id="phone" required>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox"> I agree</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
     <script>
       $(function(){
-        $('form').oForm();
-      });
+        //to test global form overrides
+        $.oFormGlobalOverrides = {
+          overrideTestFunction: function(){
 
-      test('email validation', function(){
+            return true;
 
-        var validEmails, invalidEmails, i;
+          }
+        };
 
-        validEmails = [
-          'kylerrush@gmail.com',
-          'kylerrush+test@gmail.com',
-          'kyle.r.rush@gmail.com'
-        ];
-
-        invalidEmails = [
-          'kylerrush@gmail',
-          '@gmail.com',
-          '.kylerrush@gmail.com',
-          'kylerrush.@gmail.com',
-          'kylerrush@gmail..com',
-          'kylerrush.gmail@com'
-        ];
-
-        for(i=0; i <= validEmails.length - 1; i++){
-
-          ok($.oFormFunctions.emailIsValid(validEmails[i]), validEmails[i]);
-
-        }
-
-        for(i=0; i <= invalidEmails.length - 1; i++){
-
-          ok(!$.oFormFunctions.emailIsValid(invalidEmails[i]), invalidEmails[i]);
-
-        }
-
+        $('form').oForm({
+          beforeLocal: function(){
+            return true;
+          }
+        });
       });
     </script>
+    <script src="test.js"></script>
   </body>
 </html>

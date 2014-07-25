@@ -22,11 +22,9 @@ $.fn.extend({
 
           return emailRegEx.test(email);
 
-      } else {
-
-        return false;
-
       }
+
+      return false;
 
     };
 
@@ -46,11 +44,9 @@ $.fn.extend({
 
         }
 
-      } else {
-
-        return false;
-
       }
+
+      return false;
 
     };
 
@@ -62,7 +58,13 @@ $.fn.extend({
 
     defaultOptions.stringHasValue = function(value){
 
-      return value ? true : false;
+      if(typeof value === 'string'){
+
+          return value ? true : false;
+
+      }
+
+      return false;
 
     };
 
@@ -221,13 +223,37 @@ $.fn.extend({
 
         }
 
-        executeAfterCallbacks(request);
+        defaultOptions.executeAfterCallbacks(request);
 
       });
 
     };
 
-    jQuery.oFormFunctions = defaultOptions;
+    defaultOptions.executeAfterCallbacks = function(response){
+
+      if(typeof settings.afterLocal === 'function'){
+
+        settings.afterLocal(response, settings.afterGlobal ? settings.afterGlobal : undefined);
+
+      } else {
+
+        if(typeof settings.afterGlobal === 'function'){
+
+            settings.afterGlobal(response);
+
+        }
+
+      }
+
+    };
+
+    defaultOptions.overrideTestFunction = function(){
+
+      return false;
+
+    };
+
+    /* expose default functions */
 
     if( typeof jQuery.oFormGlobalOverrides === 'object'){
 
@@ -237,19 +263,7 @@ $.fn.extend({
 
     settings = $.extend(true, defaultOptions, options);
 
-    var executeAfterCallbacks = function(response){
-
-      if(typeof settings.afterLocal === 'function'){
-
-        settings.afterLocal(response, settings.afterGlobal ? settings.afterGlobal : undefined);
-
-      } else {
-
-        settings.afterGlobal(response);
-
-      }
-
-    };
+    /* expose combined function */
 
     formSelector.submit(function(event){
 
@@ -289,7 +303,7 @@ $.fn.extend({
 
         if(validFields === false){
 
-          executeAfterCallbacks(undefined);
+          defaultOptions.executeAfterCallbacks(undefined);
 
           return;
 
