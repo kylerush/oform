@@ -1,0 +1,17 @@
+{
+  "trailing": true,
+  "curly": true,
+  "eqeqeq": true,
+  "indent": 4,
+  "latedef": true,
+  "noempty": true,
+  "nonbsp": true,
+  "undef": true,
+  "unused": true,
+  "quotmark": "single",
+  "browser": true,
+  "globals": {
+    "jQuery": true,
+    "$": true
+  }
+}
