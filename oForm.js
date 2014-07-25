@@ -196,19 +196,25 @@ $.fn.extend({
 
     defaultOptions.submitData = function(){
 
-      var request = $.ajax({
+      var requestSettings, request;
+
+      requestSettings = {
 
         type: 'POST',
         url: formSelector.attr('action') || settings.url,
         data: formSelector.serialize()
 
-      });
+      };
+
+      request = $.ajax(requestSettings);
 
       request.always(function(request){
 
         try{
 
           request.responseJSON = $.parseJSON(request.responseText);
+
+          request.requestInfo = requestSettings;
 
         } catch(error){
 
