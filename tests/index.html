@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>oForm QUnit tests</title>
+    <link rel="stylesheet" href="assets/qunit.css" type="text/css" media="screen">
+    <script src="assets/jquery.js"></script>
+    <script src="assets/oForm.js"></script>
+    <script src="assets/qunit.js"></script>
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <div>
+      <form method="POST" action="/whatever">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name">
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+    <script>
+      $(function(){
+        $('form').oForm();
+      });
+
+      test('email validation', function(){
+
+        var validEmails, invalidEmails, i;
+
+        validEmails = [
+          'kylerrush@gmail.com',
+          'kylerrush+test@gmail.com',
+          'kyle.r.rush@gmail.com'
+        ];
+
+        invalidEmails = [
+          'kylerrush@gmail',
+          '@gmail.com',
+          '.kylerrush@gmail.com',
+          'kylerrush.@gmail.com',
+          'kylerrush@gmail..com',
+          'kylerrush.gmail@com'
+        ];
+
+        for(i=0; i <= validEmails.length - 1; i++){
+
+          ok($.oFormFunctions.emailIsValid(validEmails[i]), validEmails[i]);
+
+        }
+
+        for(i=0; i <= invalidEmails.length - 1; i++){
+
+          ok(!$.oFormFunctions.emailIsValid(invalidEmails[i]), invalidEmails[i]);
+
+        }
+
+      });
+    </script>
+  </body>
+</html>

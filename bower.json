@@ -21,6 +21,7 @@
     ".jshintrc"
   ],
   "dependencies": {
-    "jquery": "1.6.4"
+    "jquery": "1.6.4",
+    "qunit": "~1.14.0"
   }
 }
