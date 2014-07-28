@@ -120,7 +120,7 @@ $.fn.extend({
 
         var invalidFields = 0;
 
-        $.each( args.selector.find('input:not([type="hidden"])'), function(index, value){
+        $.each( args.selector.find('input:not([type="hidden"]):not([type="submit"])'), function(index, value){
 
           var element, dataValidation, elementValue, type, validate;
 
@@ -291,15 +291,7 @@ $.fn.extend({
 
       if(typeof settings.validateFields === 'function'){
 
-        var validFields = settings.validateFields({
-
-          selector: formSelector,
-
-          localValidationCallback: settings.afterValidationLocal ? settings.afterValidationLocal : undefined,
-
-          globalValidationCallback: settings.afterValidationGlobal ? settings.afterValidationGlobal : undefined,
-
-        });
+        var validFields = settings.validateFields({selector: formSelector});
 
         if(validFields === false){
 

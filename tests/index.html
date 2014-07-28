@@ -35,10 +35,10 @@
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
-              <input type="phone" class="form-control" name="phone" id="phone" required>
+              <input type="tel" class="form-control" name="phone" id="phone" required>
             </div>
             <div class="form-group">
-              <label><input type="checkbox"> I agree</label>
+              <label><input type="checkbox" id="checkbox" required> I agree</label>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -46,6 +46,10 @@
       </div>
     </div>
     <script>
+      var beforeGlobalHasRun = false;
+      var beforeLocalHasRun = false;
+      var afterGlobalHasRun = false;
+      var afterLocalHasRun = false;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -53,13 +57,37 @@
 
             return true;
 
+          },
+          beforeGlobal: function(){
+
+            window.beforeGlobalHasRun = true;
+
+            return true;
+
+          },
+          afterGlobal: function(){
+
+            window.afterGlobalHasRun = true;
+
           }
         };
 
         $('form').oForm({
+
           beforeLocal: function(){
+
+            window.beforeLocalHasRun = true;
+
             return true;
+
+          },
+
+          afterLocal: function(){
+
+            window.afterLocalHasRun = true;
+
           }
+
         });
       });
     </script>
