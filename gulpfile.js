@@ -9,6 +9,7 @@ var jshint = require('gulp-jshint'),
   replace = require('gulp-replace'),
   rename = require('gulp-rename'),
   sass = require('gulp-sass'),
+  rewrite = require('http-rewrite-middleware'),
   gulp = require('gulp');
 
 gulp.task('lintJSON', function(){
@@ -47,7 +48,16 @@ gulp.task('css', function(){
 gulp.task('connect', function(){
   connect.server({
     root: 'tests',
-    livereload: true
+    livereload: true,
+    middleware: function(connect, opt){
+      return [
+        (function(){
+          return rewrite.getMiddleware([
+            {from: '^/success', to: '/json/success.json'}
+            ]);
+        })()
+      ];
+    }
   });
 });
 
