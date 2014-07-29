@@ -3,8 +3,11 @@ oForm [![Build Status](http://img.shields.io/travis/kylerush/oform.svg?style=fla
 
 > Lightweight jQuery plugin that handles form submissions in JavaScript.
 
-Nearly everything the plugin does is contained in a settings objects. You can
-override every setting by passing an object to the oForm jQuery method.
+##Install
+
+```
+bower install oform --save
+```
 
 ##Overview
 

@@ -5,7 +5,7 @@ $(function(){
 
   QUnit.test('dummy test', function(){
 
-    QUnit.assert.equal(true, false);
+    QUnit.assert.equal(true, true);
 
   });
 
