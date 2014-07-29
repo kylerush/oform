@@ -72,7 +72,7 @@ gulp.task('compress', function(){
 });
 
 gulp.task('qunit', function(){
-  qunit('./test/index.html');
+  qunit('./tests/index.html');
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
