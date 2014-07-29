@@ -122,8 +122,11 @@ gulp.task('compress', function(){
 var error;
 
 gulp.task('qunit', function(done){
-  qunit('./tests/index.html', {}, function(){
-    done();
+  qunit('./tests/index.html', {}, function(code){
+    console.log(code);
+    if(code !== 0){
+      process.exit(1);
+    }
   });
 });
 
