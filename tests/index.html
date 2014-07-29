@@ -40,16 +40,16 @@
             <div class="form-group">
               <label><input type="checkbox" id="checkbox" required> I agree</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
       </div>
     </div>
     <script>
-      var beforeGlobalHasRun = false;
-      var beforeLocalHasRun = false;
-      var afterGlobalHasRun = false;
-      var afterLocalHasRun = false;
+      var beforeGlobalHasRun = 0,
+          beforeLocalHasRun = 0,
+          afterGlobalHasRun = 0,
+          afterLocalHasRun = 0;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -60,14 +60,16 @@
           },
           beforeGlobal: function(){
 
-            window.beforeGlobalHasRun = true;
+            window.beforeGlobalHasRun++;
 
             return true;
 
           },
           afterGlobal: function(){
 
-            window.afterGlobalHasRun = true;
+            window.afterGlobalHasRun++;
+
+            return true;
 
           }
         };
@@ -76,15 +78,19 @@
 
           beforeLocal: function(){
 
-            window.beforeLocalHasRun = true;
+            window.beforeLocalHasRun++;
 
             return true;
 
           },
 
-          afterLocal: function(){
+          afterLocal: function(jqXHR, callback){
 
-            window.afterLocalHasRun = true;
+            window.afterLocalHasRun++;
+
+            callback();
+
+            return true;
 
           }
 

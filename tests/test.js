@@ -132,7 +132,7 @@ $(function(){
 
   });
 
-  test('check error/valid classes', function(){
+  QUnit.test('check error/valid classes', function(){
 
     ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
 
@@ -169,9 +169,9 @@ $(function(){
 
     $('#checkbox').prop('checked', true);
 
-    ok(nativeFunc.validateFields({selector: $('form')}), 'validateFields returns true when fields are valid');
+    QUnit.assert.ok(nativeFunc.validateFields({selector: $('form')}), 'validateFields returns true when fields are valid');
 
-    ok((function(){
+    QUnit.assert.ok((function(){
 
       var hasErrorClass = 0;
 
@@ -193,19 +193,22 @@ $(function(){
 
   });
 
-  //PLUGIN HASN'T ACTUALLY EXECUTED YET SO CAN'T DO THIS
-  /*
-  test('callback functions run after validation error', function(){
+  QUnit.asyncTest('submit test', function(){
 
-    ok(window.afterGlobalHasRun, 'afterGlobal executed after validation error');
+    expect(2);
 
-    ok(window.afterLocalHasRun, 'afterLocal executed after validation error');
+    $('form').attr('action', '/success');
+
+    nativeFunc.submitData(function(){
+
+      QUnit.assert.equal(window.afterLocalHasRun, 1, 'afterLocal executed');
+
+      QUnit.assert.equal(window.afterGlobalHasRun, 1, 'afterGlobal executed');
+
+      QUnit.start();
+
+    });
 
   });
-  */
-
-  //TO DO: verify that callback function fire after validation error
-
-  //TO DO: validate custom validation function
 
 });

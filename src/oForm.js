@@ -196,7 +196,7 @@ $.fn.extend({
 
     };
 
-    defaultOptions.submitData = function(){
+    defaultOptions.submitData = function(callback){
 
       var requestSettings, request;
 
@@ -223,13 +223,13 @@ $.fn.extend({
 
         }
 
-        defaultOptions.executeAfterCallbacks(request);
+        defaultOptions.executeAfterCallbacks(request, callback);
 
       });
 
     };
 
-    defaultOptions.executeAfterCallbacks = function(response){
+    defaultOptions.executeAfterCallbacks = function(response, callback){
 
       if(typeof settings.afterLocal === 'function'){
 
@@ -242,6 +242,12 @@ $.fn.extend({
             settings.afterGlobal(response);
 
         }
+
+      }
+
+      if(typeof callback === 'function'){
+
+        callback();
 
       }
 

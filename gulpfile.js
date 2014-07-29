@@ -10,6 +10,7 @@ var jshint = require('gulp-jshint'),
   rename = require('gulp-rename'),
   sass = require('gulp-sass'),
   rewrite = require('http-rewrite-middleware'),
+  fs = require('fs');
   gulp = require('gulp');
 
 gulp.task('lintJSON', function(){
@@ -49,13 +50,24 @@ gulp.task('connect', function(){
   connect.server({
     root: 'tests',
     livereload: true,
-    middleware: function(connect, opt){
-      return [
-        (function(){
-          return rewrite.getMiddleware([
-            {from: '^/success', to: '/json/success.json'}
-            ]);
-        })()
+    middleware: function(connect, options, middlewares){
+      return[
+        function(req, res, next){
+          if(req.method === 'POST'){
+            if(req.url === '/success'){
+              res.writeHead(200, {'Content-Type': 'application/json'});
+              fs.readFile('tests/json/success.json',
+              {
+                encoding: 'utf-8'
+              },
+              function(err, data){
+                res.end(data);
+              });
+            }
+          } else {
+            next();
+          }
+        }
       ];
     }
   });
