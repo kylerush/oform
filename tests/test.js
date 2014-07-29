@@ -3,6 +3,12 @@ $(function(){
 
   var nativeFunc = $.oFormDefaultFunctions;
 
+  QUnit.test('dummy test', function(){
+
+    QUnit.assert.equal(true, false);
+
+  });
+
   QUnit.test('email validation', function(){
 
     var validEmails, invalidEmails, i;
