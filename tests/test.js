@@ -28,7 +28,7 @@ $(function(){
 
     for(i=0; i <= validEmails.length - 1; i++){
 
-      QUnit.assert.ok(nativeFunc.emailIsValid(validEmails[i]), validEmails[i]);
+      QUnit.assert.ok(!nativeFunc.emailIsValid(validEmails[i]), validEmails[i]);
 
     }
 

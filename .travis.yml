@@ -2,5 +2,10 @@ language: node_js
 node_js:
   - "0.10.26"
 before_install: npm install gulp -g
-install: npm i
+install: npm i; bower i
+before_script: npm update; bower update
 script: gulp build
+cache:
+  directories:
+    - node_modules
+    - bower_components
