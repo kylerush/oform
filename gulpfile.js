@@ -73,6 +73,33 @@ gulp.task('connect', function(){
   });
 });
 
+gulp.task('connectBuild', function(){
+  connect.server({
+    root: 'tests',
+    livereload: false,
+    middleware: function(connect, options, middlewares){
+      return[
+        function(req, res, next){
+          if(req.method === 'POST'){
+            if(req.url === '/success'){
+              res.writeHead(200, {'Content-Type': 'application/json'});
+              fs.readFile('tests/json/success.json',
+              {
+                encoding: 'utf-8'
+              },
+              function(err, data){
+                res.end(data);
+              });
+            }
+          } else {
+            next();
+          }
+        }
+      ];
+    }
+  });
+});
+
 gulp.task('html', function(){
   gulp.src('tests/*.html')
     .pipe(connect.reload());
@@ -93,13 +120,13 @@ gulp.task('compress', function(){
 });
 
 gulp.task('qunit', function(){
-  qunit('./tests/index.html');
+  var proc = qunit('./tests/index.html', {}, function(){
+    connect.serverClose();
+  });
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJSON', 'lintJS', 'compress']);
-
-gulp.task('default', ['lintJSON']);
+gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'connectBuild', 'qunit']);
