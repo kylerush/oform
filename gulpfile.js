@@ -122,15 +122,11 @@ gulp.task('compress', function(){
 var error;
 
 gulp.task('qunit', function(done){
-  qunit('./tests/index.html', {}, function(code){
-    connect.serverClose();
-    process.exit(code);
-    done();
-  });
+  qunit('./tests/index.html');
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'connectBuild', 'qunit']);
+gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'qunit']);
