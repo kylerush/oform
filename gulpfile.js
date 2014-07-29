@@ -127,6 +127,6 @@ gulp.task('qunit', function(){
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
 
-gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']); 
+gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
 gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'connectBuild', 'qunit']);

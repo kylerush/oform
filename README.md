@@ -1,6 +1,7 @@
-#oForm
+oForm [![Build Status](http://img.shields.io/travis/kylerush/oform.svg?style=flat)](https://travis-ci.org/kylerush/oform)
+==============
 
-This is a lightweight jQuery plugin that handles form submissions in JavaScript.
+> Lightweight jQuery plugin that handles form submissions in JavaScript.
 
 Nearly everything the plugin does is contained in a settings objects. You can
 override every setting by passing an object to the oForm jQuery method.
