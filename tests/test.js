@@ -1,9 +1,9 @@
-/* global test, ok, console */
+/* global QUnit */
 $(function(){
 
   var nativeFunc = $.oFormDefaultFunctions;
 
-  test('email validation', function(){
+  QUnit.test('email validation', function(){
 
     var validEmails, invalidEmails, i;
 
@@ -28,19 +28,19 @@ $(function(){
 
     for(i=0; i <= validEmails.length - 1; i++){
 
-      ok(nativeFunc.emailIsValid(validEmails[i]), validEmails[i]);
+      QUnit.assert.ok(nativeFunc.emailIsValid(validEmails[i]), validEmails[i]);
 
     }
 
     for(i=0; i <= invalidEmails.length - 1; i++){
 
-      ok(!nativeFunc.emailIsValid(invalidEmails[i]), invalidEmails[i]);
+      QUnit.assert.ok(!nativeFunc.emailIsValid(invalidEmails[i]), invalidEmails[i]);
 
     }
 
   });
 
-  test('phone is valid', function(){
+  QUnit.test('phone is valid', function(){
 
     var validPhones, invalidPhones, i;
 
@@ -70,63 +70,63 @@ $(function(){
 
       for(i=0; i <= validPhones.length - 1; i++){
 
-        ok(nativeFunc.phoneIsValid(validPhones[i]), validPhones[i]);
+        QUnit.assert.ok(nativeFunc.phoneIsValid(validPhones[i]), validPhones[i]);
 
       }
 
       for(i=0; i <= invalidPhones.length - 1; i++){
 
-        ok(!nativeFunc.phoneIsValid(invalidPhones[i]), invalidPhones[i]);
+        QUnit.assert.ok(!nativeFunc.phoneIsValid(invalidPhones[i]), invalidPhones[i]);
 
       }
 
   });
 
-  test('string has value', function(){
+  QUnit.test('string has value', function(){
 
-    ok(nativeFunc.stringHasValue('foo'), 'actual string');
+    QUnit.assert.ok(nativeFunc.stringHasValue('foo'), 'actual string');
 
-    ok(!nativeFunc.stringHasValue(''), 'blank string');
+    QUnit.assert.ok(!nativeFunc.stringHasValue(''), 'blank string');
 
-    ok(!nativeFunc.stringHasValue(3), 'number ');
+    QUnit.assert.ok(!nativeFunc.stringHasValue(3), 'number ');
 
   });
 
-  test('checkbox is valid', function(){
+  QUnit.test('checkbox is valid', function(){
 
     var checkbox = $('#checkbox');
 
     checkbox.prop('checked', true);
 
-    ok(nativeFunc.checkboxIsValid(checkbox), 'checkbox is checked');
+    QUnit.assert.ok(nativeFunc.checkboxIsValid(checkbox), 'checkbox is checked');
 
     checkbox.prop('checked', false);
 
-    ok(!nativeFunc.checkboxIsValid(checkbox), 'checkbox is not checked');
+    QUnit.assert.ok(!nativeFunc.checkboxIsValid(checkbox), 'checkbox is not checked');
 
   });
 
-  test('global overrides', function(){
+  QUnit.test('global overrides', function(){
 
-    ok(nativeFunc.overrideTestFunction(), 'executed');
+    QUnit.assert.ok(nativeFunc.overrideTestFunction(), 'executed');
 
   });
 
-  test('beforeLocal function', function(){
+  QUnit.test('beforeLocal function', function(){
 
     if(typeof nativeFunc.beforeLocal === 'function'){
 
-      ok(nativeFunc.beforeLocal(), 'defined, executed');
+      QUnit.assert.ok(nativeFunc.beforeLocal(), 'defined, executed');
 
     }
 
   });
 
-  test('beforeGlobal function', function(){
+  QUnit.test('beforeGlobal function', function(){
 
     if(typeof nativeFunc.beforeGlobal === 'function'){
 
-      ok(nativeFunc.beforeGlobal(), 'defined, executed');
+      QUnit.assert.ok(nativeFunc.beforeGlobal(), 'defined, executed');
 
     }
 
@@ -134,11 +134,11 @@ $(function(){
 
   QUnit.test('check error/valid classes', function(){
 
-    ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
+    QUnit.assert.ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
 
-    ok($('body').hasClass('error-state'), 'body error class present on error');
+    QUnit.assert.ok($('body').hasClass('error-state'), 'body error class present on error');
 
-    ok((function(){
+    QUnit.assert.ok((function(){
 
       var missingClass = 0;
 
@@ -195,7 +195,7 @@ $(function(){
 
   QUnit.asyncTest('submit test', function(){
 
-    expect(2);
+    QUnit.expect(2);
 
     $('form').attr('action', '/success');
 
