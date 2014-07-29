@@ -123,6 +123,7 @@ var error;
 
 gulp.task('qunit', function(done){
   qunit('./tests/index.html');
+  done();
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
