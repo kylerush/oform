@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>oForm QUnit tests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="assets/css/styles.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="assets/qunit.css" type="text/css" media="screen">
+    <!--
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
+    <script src="http://code.jquery.com/qunit/qunit-1.14.0.css"></script>
+    -->
+    <script src="http://localhost:8080/assets/jquery.js"></script>
+    <script src="http://localhost:8080/assets/oFormTest.js"></script>
+    <script src="http://localhost:8080/assets/qunit.js"></script>
+    <!--<script src="assets/bootstrap.js"></script>-->
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <p class=""></p>
+          <form method="POST" action="/whatever" role="form" novalidate>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" name="name" id="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control" name="url" id="url" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control" name="phone" id="phone" required>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" id="checkbox" required> I agree</label>
+            </div>
+            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      var beforeGlobalHasRun = 0,
+          beforeLocalHasRun = 0,
+          afterGlobalHasRun = 0,
+          afterLocalHasRun = 0;
+      $(function(){
+        //to test global form overrides
+        $.oFormGlobalOverrides = {
+          overrideTestFunction: function(){
+
+            return true;
+
+          },
+          beforeGlobal: function(){
+
+            window.beforeGlobalHasRun++;
+
+            return true;
+
+          },
+          afterGlobal: function(){
+
+            window.afterGlobalHasRun++;
+
+            return true;
+
+          }
+        };
+
+        $('form').oForm({
+
+          beforeLocal: function(){
+
+            window.beforeLocalHasRun++;
+
+            return true;
+
+          },
+
+          afterLocal: function(jqXHR, callback){
+
+            window.afterLocalHasRun++;
+
+            callback();
+
+            return true;
+
+          }
+
+        });
+      });
+    </script>
+    <script src="http://localhost:8080/test.js"></script>
+  </body>
+</html>

@@ -259,7 +259,7 @@ $.fn.extend({
 
     };
 
-    /* expose default functions */
+    jQuery.oFormDefaultFunctions = defaultOptions;
 
     if( typeof jQuery.oFormGlobalOverrides === 'object'){
 
@@ -269,7 +269,7 @@ $.fn.extend({
 
     settings = $.extend(true, defaultOptions, options);
 
-    /* expose combined function */
+    jQuery.oFormFunctions = settings;
 
     formSelector.submit(function(event){
 
