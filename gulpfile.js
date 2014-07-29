@@ -9,8 +9,8 @@ var jshint = require('gulp-jshint'),
   replace = require('gulp-replace'),
   rename = require('gulp-rename'),
   sass = require('gulp-sass'),
-  rewrite = require('http-rewrite-middleware'),
   fs = require('fs');
+  qunit = require('node-qunit-phantomjs'),
   gulp = require('gulp');
 
 gulp.task('lintJSON', function(){
@@ -90,6 +90,10 @@ gulp.task('compress', function(){
     .pipe(header('/* oForm - Author: Kyle Rush - MIT license - https://github.com/kylerush/oform */ \n'))
     .pipe(rename('oForm.min.js'))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task('qunit', function(){
+  qunit('./tests/index.html');
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
