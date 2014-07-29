@@ -119,9 +119,13 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('qunit', function(){
-  var proc = qunit('./tests/index.html', {}, function(){
+var error;
+
+gulp.task('qunit', function(done){
+  qunit('./tests/index.html', {}, function(code){
     connect.serverClose();
+    process.exit(code);
+    done();
   });
 });
 
