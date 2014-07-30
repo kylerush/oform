@@ -48,7 +48,7 @@ gulp.task('css', function(){
 
 gulp.task('connect', function(){
   connect.server({
-    root: 'tests',
+    root: 'test',
     livereload: true,
     middleware: function(connect, options, middlewares){
       return[
@@ -56,7 +56,7 @@ gulp.task('connect', function(){
           if(req.method === 'POST'){
             if(req.url === '/success'){
               res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile('tests/json/success.json',
+              fs.readFile('tests/fixture/json/success.json',
               {
                 encoding: 'utf-8'
               },
@@ -75,7 +75,7 @@ gulp.task('connect', function(){
 
 gulp.task('connectBuild', function(){
   connect.server({
-    root: 'tests',
+    root: 'test',
     livereload: false,
     middleware: function(connect, options, middlewares){
       return[
@@ -83,7 +83,7 @@ gulp.task('connectBuild', function(){
           if(req.method === 'POST'){
             if(req.url === '/success'){
               res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile('tests/json/success.json',
+              fs.readFile('test/fixture/json/success.json',
               {
                 encoding: 'utf-8'
               },
@@ -100,15 +100,15 @@ gulp.task('connectBuild', function(){
   });
 });
 
-gulp.task('html', function(){
-  gulp.src('tests/*.html')
+gulp.task('reloadHTML', function(){
+  gulp.src('test/fixture/*.html')
     .pipe(connect.reload());
 });
 
 gulp.task('watch', function(){
-  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'html']);
+  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'reloadHTML']);
   gulp.watch(['src/**/*.scss'], ['css']);
-  gulp.watch(['tests/*.html'], ['prepTestFiles', 'html']);
+  gulp.watch(['tests/*.html'], ['prepTestFiles', 'reloadHTML']);
 });
 
 gulp.task('compress', function(){
@@ -122,7 +122,7 @@ gulp.task('compress', function(){
 var error;
 
 gulp.task('qunit', function(done){
-  qunit('./tests/index.html', {}, function(code){
+  qunit('./test/fixture/index.html', {}, function(code){
     if(code !== 0){
       process.exit(1);
     }
