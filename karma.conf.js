@@ -14,11 +14,11 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'tests/index.html', watched: true, served: true, included: false},
-      {pattern: 'tests/**/*.js', watched: true, served: true, included: false},
-      {pattern: 'tests/**/*.json', watched: true, served: true, included: false},
-      {pattern: 'tests/assets/*.css', watched: true, served: true, included: false},
-      {pattern: 'tests/assets/css/*.css', watched: true, served: true, included: false}
+      {pattern: 'tests/index.html', watched: false, served: true, included: false},
+      {pattern: 'tests/**/*.js', watched: false, served: true, included: true},
+      {pattern: 'tests/**/*.json', watched: false, served: true, included: false},
+      {pattern: 'tests/assets/*.css', watched: false, served: true, included: false},
+      {pattern: 'tests/assets/css/*.css', watched: false, served: true, included: false}
     ],
 
 
@@ -38,6 +38,11 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress', 'coverage'],
+
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/'
+    },
 
 
     // web server port
@@ -63,11 +68,15 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'Safari'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+
+    client: {
+      captureConsole: true
+    }
   });
 };
