@@ -100,15 +100,15 @@ gulp.task('connectBuild', function(){
   });
 });
 
-gulp.task('html', function(){
+gulp.task('reloadHTML', function(){
   gulp.src('tests/*.html')
     .pipe(connect.reload());
 });
 
 gulp.task('watch', function(){
-  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'html']);
+  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'reloadHTML']);
   gulp.watch(['src/**/*.scss'], ['css']);
-  gulp.watch(['tests/*.html'], ['prepTestFiles', 'html']);
+  gulp.watch(['tests/*.html'], ['prepTestFiles', 'reloadHTML']);
 });
 
 gulp.task('compress', function(){
@@ -123,6 +123,7 @@ var error;
 
 gulp.task('qunit', function(done){
   qunit('./tests/index.html', {}, function(code){
+    console.log('done');
     if(code !== 0){
       process.exit(1);
     }
