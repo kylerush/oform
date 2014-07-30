@@ -198,7 +198,7 @@ $.fn.extend({
 
     defaultOptions.submitData = function(callback){
 
-      var requestSettings, request;
+      var requestSettings, response;
 
       requestSettings = {
 
@@ -208,22 +208,22 @@ $.fn.extend({
 
       };
 
-      request = $.ajax(requestSettings);
+      response = $.ajax(requestSettings);
 
-      request.always(function(request){
+      response.always(function(){
 
         try{
 
-          request.responseJSON = $.parseJSON(request.responseText);
+          response.responseJSON = $.parseJSON(response.responseText);
 
-          request.requestInfo = requestSettings;
+          response.requestInfo = requestSettings;
 
         } catch(error){
 
 
         }
 
-        defaultOptions.executeAfterCallbacks(request, callback);
+        defaultOptions.executeAfterCallbacks(response, callback);
 
       });
 

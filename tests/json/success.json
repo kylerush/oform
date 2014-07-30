@@ -1,3 +1,4 @@
 {
-  "success": true
+  "success": true,
+  "testProperty": 1
 }

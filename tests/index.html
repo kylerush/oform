@@ -54,7 +54,8 @@
       var beforeGlobalHasRun = 0,
           beforeLocalHasRun = 0,
           afterGlobalHasRun = 0,
-          afterLocalHasRun = 0;
+          afterLocalHasRun = 0,
+          responseObject;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -70,7 +71,11 @@
             return true;
 
           },
-          afterGlobal: function(){
+          afterGlobal: function(jqXHR){
+
+            console.log('hello');
+
+            console.log(jqXHR);
 
             window.afterGlobalHasRun++;
 
@@ -93,7 +98,9 @@
 
             window.afterLocalHasRun++;
 
-            callback();
+            responseObject = jqXHR;
+
+            callback(jqXHR);
 
             return true;
 
