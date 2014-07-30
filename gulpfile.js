@@ -11,7 +11,10 @@ var jshint = require('gulp-jshint'),
   sass = require('gulp-sass'),
   fs = require('fs');
   qunit = require('node-qunit-phantomjs'),
-  gulp = require('gulp');
+  gulp = require('gulp'),
+  clean = require('gulp-clean');
+
+var testDir = 'test/fixture'
 
 gulp.task('lintJSON', function(){
   gulp.src(['*.json', '.jshintrc'])
@@ -25,25 +28,30 @@ gulp.task('lintJS', function(){
     .pipe(jshint.reporter(stylish));
 });
 
+gulp.task('cleanAssets', function(){
+  gulp.src(testDir + '/assets/', {read: false})
+    .pipe(clean());
+});
+
 gulp.task('prepTestFiles', function(){
   gulp.src('src/oForm.js')
     .pipe(replace('/* expose default functions */', 'jQuery.oFormDefaultFunctions = defaultOptions;'))
     .pipe(replace('/* expose combined function */', 'jQuery.oFormFunctions = settings;'))
     .pipe(rename('oFormTest.js'))
-    .pipe(gulp.dest('tests/assets'));
+    .pipe(gulp.dest(testDir + '/assets/'));
   gulp.src([
     'bower_components/qunit/qunit/qunit.js',
     'bower_components/qunit/qunit/qunit.css',
     'bower_components/jquery/jquery.js',
     'src/assets/scss/javascripts/bootstrap.js'
     ])
-      .pipe(gulp.dest('tests/assets/'));
+      .pipe(gulp.dest(testDir + '/assets/'));
 });
 
 gulp.task('css', function(){
   gulp.src('src/assets/scss/stylesheets/styles.scss')
     .pipe(sass())
-    .pipe(gulp.dest('tests/assets/css/'));
+    .pipe(gulp.dest(testDir + '/assets/css/'));
 });
 
 gulp.task('connect', function(){
@@ -56,34 +64,7 @@ gulp.task('connect', function(){
           if(req.method === 'POST'){
             if(req.url === '/success'){
               res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile('tests/fixture/json/success.json',
-              {
-                encoding: 'utf-8'
-              },
-              function(err, data){
-                res.end(data);
-              });
-            }
-          } else {
-            next();
-          }
-        }
-      ];
-    }
-  });
-});
-
-gulp.task('connectBuild', function(){
-  connect.server({
-    root: 'test',
-    livereload: false,
-    middleware: function(connect, options, middlewares){
-      return[
-        function(req, res, next){
-          if(req.method === 'POST'){
-            if(req.url === '/success'){
-              res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile('test/fixture/json/success.json',
+              fs.readFile(testDir + '/assets/json/success.json',
               {
                 encoding: 'utf-8'
               },
@@ -101,7 +82,7 @@ gulp.task('connectBuild', function(){
 });
 
 gulp.task('reloadHTML', function(){
-  gulp.src('test/fixture/*.html')
+  gulp.src(testDir + '/*.html')
     .pipe(connect.reload());
 });
 
@@ -112,7 +93,7 @@ gulp.task('watch', function(){
 });
 
 gulp.task('compress', function(){
-  gulp.src('oForm.js')
+  gulp.src('src/oForm.js')
     .pipe(uglify({mangle: false}))
     .pipe(header('/* oForm - Author: Kyle Rush - MIT license - https://github.com/kylerush/oform */ \n'))
     .pipe(rename('oForm.min.js'))
