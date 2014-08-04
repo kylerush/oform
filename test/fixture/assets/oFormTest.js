@@ -184,11 +184,15 @@ $.fn.extend({
 
           $('body').removeClass('error-state');
 
+          settings.adjustClasses(formSelector.find('.error-message'), true);
+
           return true;
 
         } else {
 
           $('body').addClass('error-state');
+
+          settings.adjustClasses(formSelector.find('.error-message'), false);
 
           return false;
 

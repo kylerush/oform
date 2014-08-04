@@ -163,6 +163,8 @@ $(function(){
 
     })(), 'all fields have error class when values are invalid');
 
+    QUnit.assert.ok($('.error-message').hasClass('error-show'), '.error message has .error-show class');
+
     //enter valid data and verify that classes were removed
 
     $('#name').val('John Doe');
@@ -196,6 +198,7 @@ $(function(){
 
     })(), 'no field has error-show class when all fields are valid');
 
+    QUnit.assert.ok(!$('.error-message').hasClass('error-show'), '.error message does not have .error-show class');
 
   });
 
