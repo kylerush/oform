@@ -62,7 +62,9 @@
           beforeLocalHasRun = 0,
           afterGlobalHasRun = 0,
           afterLocalHasRun = 0,
-          responseObject;
+          beforeSubmitHasRun = 0,
+          responseObject,
+          beforeSubmit = false;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -94,6 +96,22 @@
             window.beforeLocalHasRun++;
 
             return true;
+
+          },
+
+          beforeSubmit: function(){
+
+            window.beforeSubmitHasRun++;
+
+            if(window.beforeSubmitHasRun <= 1){
+
+              return false;
+
+            } else {
+
+              return true;
+
+            }
 
           },
 
