@@ -138,6 +138,20 @@ $(function(){
 
   });
 
+  QUnit.asyncTest('beforeSubmit', function(){
+
+    $('form').attr('action', '/success');
+
+    nativeFunc.submitData(function(){
+
+      QUnit.assert.equal(window.beforeSubmitHasRun, 1, 'beforeSubmit has run');
+
+      QUnit.start();
+
+    });
+
+  });
+
   QUnit.test('check error/valid classes', function(){
 
     QUnit.assert.ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
@@ -212,9 +226,11 @@ $(function(){
 
     nativeFunc.submitData(function(){
 
-      QUnit.assert.equal(window.afterLocalHasRun, 1, 'afterLocal executed');
+      QUnit.assert.equal(window.beforeSubmitHasRun, 2, 'afterLocal executed');
 
-      QUnit.assert.equal(window.afterGlobalHasRun, 1, 'afterGlobal executed');
+      QUnit.assert.equal(window.afterLocalHasRun, 2, 'afterLocal executed');
+
+      QUnit.assert.equal(window.afterGlobalHasRun, 2, 'afterGlobal executed');
 
       QUnit.assert.equal(typeof(window.responseObject), 'object', 'response jqXHR is object type');
 
