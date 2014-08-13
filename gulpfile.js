@@ -42,7 +42,8 @@ gulp.task('prepTestFiles', function(){
   gulp.src([
     'bower_components/qunit/qunit/qunit.js',
     'bower_components/qunit/qunit/qunit.css',
-    'bower_components/jquery/jquery.js',
+    'bower_components/jquery/dist/jquery.min.js',
+    'bower_components/jquery/dist/jquery.min.map',
     'src/assets/scss/javascripts/bootstrap.js'
     ])
       .pipe(gulp.dest(testDir + '/assets/'));
@@ -64,11 +65,12 @@ gulp.task('connect', function(){
           if(req.method === 'POST'){
             if(req.url === '/success'){
               res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile(testDir + '/assets/json/success.json',
+              fs.readFile(testDir +'/json/success.json',
               {
                 encoding: 'utf-8'
               },
               function(err, data){
+                if (err) throw err;
                 res.end(data);
               });
             }
