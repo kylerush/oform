@@ -63,12 +63,16 @@ gulp.task('connect', function(){
         function(req, res, next){
           if(req.method === 'POST'){
             if(req.url === '/success'){
-              res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile(testDir + '/assets/json/success.json',
+              fs.readFile(testDir + '/json/success.json',
               {
                 encoding: 'utf-8'
               },
               function(err, data){
+                if(err){
+                  res.writeHead(500, {'Content-Type': 'application/json'});
+                } else {
+                  res.writeHead(200, {'Content-Type': 'application/json'});
+                }
                 res.end(data);
               });
             }
@@ -87,9 +91,9 @@ gulp.task('reloadHTML', function(){
 });
 
 gulp.task('watch', function(){
-  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'reloadHTML']);
-  gulp.watch(['src/**/*.scss'], ['css']);
-  gulp.watch(['tests/*.html'], ['prepTestFiles', 'reloadHTML']);
+  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'qunit', 'reloadHTML']);
+  gulp.watch(['src/**/*.scss'], ['css', 'qunit']);
+  gulp.watch(['tests/*.html'], ['prepTestFiles', 'qunit', 'reloadHTML']);
 });
 
 gulp.task('compress', function(){
