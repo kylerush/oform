@@ -87,9 +87,9 @@ gulp.task('reloadHTML', function(){
 });
 
 gulp.task('watch', function(){
-  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'reloadHTML']);
-  gulp.watch(['src/**/*.scss'], ['css']);
-  gulp.watch(['tests/*.html'], ['prepTestFiles', 'reloadHTML']);
+  gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'qunit', 'reloadHTML']);
+  gulp.watch(['src/**/*.scss'], ['css', 'qunit']);
+  gulp.watch(['tests/*.html'], ['prepTestFiles', 'qunit', 'reloadHTML']);
 });
 
 gulp.task('compress', function(){
