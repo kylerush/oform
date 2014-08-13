@@ -10,7 +10,7 @@
     <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
     <script src="http://code.jquery.com/qunit/qunit-1.14.0.css"></script>
     -->
-    <script src="assets/jquery.js"></script>
+    <script src="assets/jquery.min.js"></script>
     <script src="assets/oFormTest.js"></script>
     <script src="assets/qunit.js"></script>
     <!--<script src="assets/bootstrap.js"></script>-->
@@ -119,7 +119,7 @@
 
             window.afterLocalHasRun++;
 
-            responseObject = jqXHR;
+            window.responseObject = jqXHR;
 
             callback(jqXHR);
 
