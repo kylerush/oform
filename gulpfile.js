@@ -64,14 +64,19 @@ gulp.task('connect', function(){
         function(req, res, next){
           if(req.method === 'POST'){
             if(req.url === '/success'){
-              res.writeHead(200, {'Content-Type': 'application/json'});
               fs.readFile(testDir +'/json/success.json',
               {
                 encoding: 'utf-8'
               },
               function(err, data){
-                if (err) throw err;
-                res.end(data);
+                if (err){
+                  res.writeHead(500, {'Content-Type': 'application/json'});
+                  res.end();
+                } else {
+                  res.writeHead(200, {'Content-Type': 'application/json'});
+                  res.end(data);
+                }
+
               });
             }
           } else {
