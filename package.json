@@ -31,6 +31,7 @@
   "dependencies": {
     "gulp": "^3.8.7",
     "gulp-jshint": "^1.7.1",
+    "jshint-stylish": "^0.4.0",
     "gulp-qunit": "^0.3.3"
   }
 }
