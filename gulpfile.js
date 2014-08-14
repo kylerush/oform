@@ -1,26 +1,19 @@
 /* global require */
-var jshint = require('gulp-jshint'),
-  stylish = require('jshint-stylish'),
-  uglify = require('gulp-uglify'),
-  rename = require('gulp-rename'),
-  header = require('gulp-header'),
-  connect = require('gulp-connect'),
-  replace = require('gulp-replace'),
-  rename = require('gulp-rename'),
-  sass = require('gulp-sass'),
-  fs = require('fs');
-  qunit = require('gulp-qunit'),
-  gulp = require('gulp');
+var gulp = require('gulp');
 
 var testDir = 'test/fixture'
 
 gulp.task('lintJS', function(){
+  var jshint = require('gulp-jshint'),
+      stylish = require('jshint-stylish');
   gulp.src(['*/**.js', '!**/*.min.js', '!bower_components', '!node_modules'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
 
 gulp.task('prepTestFiles', function(){
+  var replace = require('gulp-replace'),
+      rename = require('gulp-rename');
   gulp.src('src/oForm.js')
     .pipe(replace('/* expose default functions */', 'jQuery.oFormDefaultFunctions = defaultOptions;'))
     .pipe(replace('/* expose combined function */', 'jQuery.oFormFunctions = settings;'))
@@ -29,12 +22,15 @@ gulp.task('prepTestFiles', function(){
 });
 
 gulp.task('css', function(){
+  var sass = require('gulp-sass');
   gulp.src('src/assets/scss/stylesheets/styles.scss')
     .pipe(sass())
     .pipe(gulp.dest(testDir + '/assets/css/'));
 });
 
 gulp.task('connect', function(){
+  var connect = require('gulp-connect'),
+      fs = require('fs');
   connect.server({
     root: 'test',
     livereload: true,
@@ -66,6 +62,7 @@ gulp.task('connect', function(){
 });
 
 gulp.task('reloadHTML', function(){
+  var connect = require('gulp-connect');
   gulp.src(testDir + '/*.html')
     .pipe(connect.reload());
 });
@@ -77,6 +74,9 @@ gulp.task('watch', function(){
 });
 
 gulp.task('compress', function(){
+  var uglify = require('gulp-uglify'),
+      header = require('gulp-header'),
+      rename = require('gulp-rename');
   gulp.src('src/oForm.js')
     .pipe(uglify({mangle: false}))
     .pipe(header('/* oForm - Author: Kyle Rush - MIT license - https://github.com/kylerush/oform */ \n'))
@@ -85,6 +85,7 @@ gulp.task('compress', function(){
 });
 
 gulp.task('qunit', function(){
+  var qunit = require('gulp-qunit');
   return gulp.src('./test/fixture/index.html')
          .pipe(qunit());
 });
