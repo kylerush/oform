@@ -26,7 +26,10 @@
     "gulp-replace": "^0.4.0",
     "gulp-connect": "^2.0.6",
     "gulp-sass": "^0.7.2",
-    "gulp-qunit": "^0.3.3",
-    "gulp-rimraf": "^0.1.0"
+    "gulp-qunit": "^0.3.3"
+  },
+  "dependencies": {
+    "gulp": "^3.8.7",
+    "gulp-qunit": "^0.3.3"
   }
 }

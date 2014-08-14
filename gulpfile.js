@@ -10,8 +10,7 @@ var jshint = require('gulp-jshint'),
   sass = require('gulp-sass'),
   fs = require('fs');
   qunit = require('gulp-qunit'),
-  gulp = require('gulp'),
-  rimraf = require('gulp-rimraf');
+  gulp = require('gulp');
 
 var testDir = 'test/fixture'
 
@@ -19,10 +18,6 @@ gulp.task('lintJS', function(){
   gulp.src(['*/**.js', '!**/*.min.js', '!bower_components', '!node_modules'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
-});
-
-gulp.task('cleanAssets', function(){
-  rimraf('/assets');
 });
 
 gulp.task('prepTestFiles', function(){
@@ -94,8 +89,8 @@ gulp.task('qunit', function(){
          .pipe(qunit());
 });
 
-//gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
-
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJS', 'compress', 'prepTestFiles', 'css', 'qunit']);
+gulp.task('test', ['qunit']);
+
+gulp.task('build', ['lintJS', 'compress']);
