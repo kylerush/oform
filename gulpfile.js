@@ -1,7 +1,6 @@
 /* global require */
 var jshint = require('gulp-jshint'),
   stylish = require('jshint-stylish'),
-  jsonlint = require('gulp-jsonlint'),
   uglify = require('gulp-uglify'),
   rename = require('gulp-rename'),
   header = require('gulp-header'),
@@ -12,15 +11,9 @@ var jshint = require('gulp-jshint'),
   fs = require('fs');
   qunit = require('gulp-qunit'),
   gulp = require('gulp'),
-  clean = require('gulp-clean');
+  rimraf = require('gulp-rimraf');
 
 var testDir = 'test/fixture'
-
-gulp.task('lintJSON', function(){
-  gulp.src(['*.json', '.jshintrc'])
-    .pipe(jsonlint())
-    .pipe(jsonlint.reporter());
-});
 
 gulp.task('lintJS', function(){
   gulp.src(['*/**.js', '!**/*.min.js', '!bower_components', '!node_modules'])
@@ -29,8 +22,7 @@ gulp.task('lintJS', function(){
 });
 
 gulp.task('cleanAssets', function(){
-  gulp.src(testDir + '/assets/', {read: false})
-    .pipe(clean());
+  rimraf('/assets');
 });
 
 gulp.task('prepTestFiles', function(){
@@ -137,4 +129,4 @@ gulp.task('qunit', function(){
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'checkFiles', 'qunit']);
+gulp.task('build', ['lintJS', 'compress', 'prepTestFiles', 'css', 'checkFiles', 'qunit']);
