@@ -10,7 +10,7 @@ var jshint = require('gulp-jshint'),
   rename = require('gulp-rename'),
   sass = require('gulp-sass'),
   fs = require('fs');
-  qunit = require('node-qunit-phantomjs'),
+  qunit = require('gulp-qunit'),
   gulp = require('gulp'),
   clean = require('gulp-clean');
 
@@ -118,14 +118,19 @@ gulp.task('checkFiles', function(){
 
 });
 
-var error;
-
+/*
 gulp.task('qunit', function(done){
   qunit('./test/fixture/index.html', {}, function(code){
     if(code !== 0){
       process.exit(1);
     }
   });
+});
+*/
+
+gulp.task('qunit', function(){
+  return gulp.src('./test/fixture/index.html')
+         .pipe(qunit());
 });
 
 //gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
