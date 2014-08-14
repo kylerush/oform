@@ -31,13 +31,6 @@ gulp.task('prepTestFiles', function(){
     .pipe(replace('/* expose combined function */', 'jQuery.oFormFunctions = settings;'))
     .pipe(rename('oFormTest.js'))
     .pipe(gulp.dest(testDir + '/assets/'));
-  gulp.src([
-    'bower_components/qunit/qunit/qunit.js',
-    'bower_components/qunit/qunit/qunit.css',
-    'bower_components/jquery/jquery.js',
-    'src/assets/scss/javascripts/bootstrap.js'
-    ])
-      .pipe(gulp.dest(testDir + '/assets/'));
 });
 
 gulp.task('css', function(){
@@ -96,30 +89,6 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('checkFiles', function(){
-
-  var files, foundFile;
-
-  files = ['oFormTest.js', 'jquery.js', 'qunit.js'];
-
-  files.forEach(function(script){
-
-    console.log(script + ': ' + typeof( fs.readFileSync('./test/fixture/assets/' + script, {encoding: 'utf-8'}) ) );
-
-  });
-
-});
-
-/*
-gulp.task('qunit', function(done){
-  qunit('./test/fixture/index.html', {}, function(code){
-    if(code !== 0){
-      process.exit(1);
-    }
-  });
-});
-*/
-
 gulp.task('qunit', function(){
   return gulp.src('./test/fixture/index.html')
          .pipe(qunit());
@@ -129,4 +98,4 @@ gulp.task('qunit', function(){
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJS', 'compress', 'prepTestFiles', 'css', 'checkFiles', 'qunit']);
+gulp.task('build', ['lintJS', 'compress', 'prepTestFiles', 'css', 'qunit']);
