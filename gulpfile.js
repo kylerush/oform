@@ -106,8 +106,15 @@ gulp.task('compress', function(){
 
 gulp.task('checkFiles', function(){
 
-  var oFormTestFile = fs.readFileSync('./test/fixture/assets/oFormTest.js', {encoding: 'utf-8'});
-  console.log('oFormTestFile: ' + typeof(oFormTestFile) );
+  var files, foundFile;
+
+  files = ['oFormTest.js', 'jquery.js', 'qunit.js'];
+
+  files.forEach(function(script){
+
+    console.log(script + ': ' + typeof( fs.readFileSync('./test/fixture/assets/' + script, {encoding: 'utf-8'}) ) );
+
+  });
 
 });
 
