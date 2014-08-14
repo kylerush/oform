@@ -60,7 +60,8 @@
           beforeSubmitHasRun = 0,
           responseObject,
           beforeSubmit = false,
-          beforeSubmitTest = false;
+          beforeSubmitTest = false,
+          customData;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -105,7 +106,13 @@
 
             } else {
 
-              return true;
+              var data = {
+
+                custom: 'data'
+
+              };
+
+              return data;
 
             }
 

@@ -1,7 +1,9 @@
 /* global QUnit */
 $(function(){
 
-  var nativeFunc = $.oFormDefaultFunctions, action;
+  var nativeFunc, action;
+
+  nativeFunc = $.oFormDefaultFunctions;
 
   QUnit.test('dummy test', function(){
 
@@ -220,7 +222,7 @@ $(function(){
 
   QUnit.asyncTest('submit test', function(){
 
-    QUnit.expect(9);
+    QUnit.expect(10);
 
     $('form').attr('action', action);
 
@@ -242,6 +244,8 @@ $(function(){
 
       QUnit.assert.equal( typeof(window.responseObject.requestInfo), 'object', 'response jqXHR.requestInfo is type object');
 
+      QUnit.assert.equal(window.responseObject.requestInfo.data.custom, 'data', 'custom data works');
+
       QUnit.assert.ok(window.responseObject.requestInfo.url === action, 'requestInfo.url is ' + action);
 
       QUnit.start();
@@ -249,26 +253,5 @@ $(function(){
     });
 
   });
-  /*
-  QUnit.asyncTest('custom data', function(){
-
-    $('form').attr('action', action);
-
-    var data = {
-
-      firstName: 'Custom data'
-
-    };
-
-    nativeFunc.submitData(function(){
-
-      QUnit.assert.equal(window.responseObject.requestInfo, 'Custom data', 'Custom data matched.');
-
-    }, data);
-
-    QUnit.start();
-
-  });
-  */
 
 });
