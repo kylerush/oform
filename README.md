@@ -175,7 +175,8 @@ one argument which is a callback function to execute after the function is done.
 
 This function will be executed before the plugin submits the form data. If the
 function returns `false` the plugin will stop executing. If the function returns
-`true` it will continue executing.
+an object the object will be used as the data for the POST request instead of the
+serialized form fields.
 
 ###beforeGlobal and beforeLocal: function
 

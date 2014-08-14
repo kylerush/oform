@@ -1,7 +1,9 @@
 /* global QUnit */
 $(function(){
 
-  var nativeFunc = $.oFormDefaultFunctions;
+  var nativeFunc, action;
+
+  nativeFunc = $.oFormDefaultFunctions;
 
   QUnit.test('dummy test', function(){
 
@@ -216,11 +218,11 @@ $(function(){
 
   });
 
+  action = 'http://www.mocky.io/v2/53ec2d0a5d62de440417fba5';
+
   QUnit.asyncTest('submit test', function(){
 
-    //QUnit.expect(8);
-
-    var action = 'http://www.mocky.io/v2/53ec2d0a5d62de440417fba5';
+    QUnit.expect(10);
 
     $('form').attr('action', action);
 
@@ -241,6 +243,8 @@ $(function(){
       QUnit.assert.ok(window.responseObject.responseJSON.testProperty === 1, 'window.responseObject.responseJSON.testProperty === 1');
 
       QUnit.assert.equal( typeof(window.responseObject.requestInfo), 'object', 'response jqXHR.requestInfo is type object');
+
+      QUnit.assert.equal(window.responseObject.requestInfo.data.custom, 'data', 'custom data works');
 
       QUnit.assert.ok(window.responseObject.requestInfo.url === action, 'requestInfo.url is ' + action);
 

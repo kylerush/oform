@@ -2,6 +2,8 @@ $.fn.extend({
 
   oForm: function(options){
 
+    window.jQuery.oFormGlobals = window.jQuery.oFormGlobals || {};
+
     var defaultOptions, settings, formSelector;
 
     formSelector = $(this);
@@ -202,7 +204,7 @@ $.fn.extend({
 
     defaultOptions.submitData = function(callback){
 
-      var requestSettings, response, sendData;
+      var requestSettings, response, sendData, beforeSubmitReturn;
 
       requestSettings = {
 
@@ -237,7 +239,15 @@ $.fn.extend({
 
       if(settings.beforeSubmit){
 
-        if(settings.beforeSubmit()){
+        beforeSubmitReturn = settings.beforeSubmit();
+
+        if( typeof(beforeSubmitReturn) === 'object' ){
+
+          requestSettings.data = beforeSubmitReturn;
+
+        }
+
+        if(beforeSubmitReturn !== false){
 
           sendData();
 
@@ -297,9 +307,7 @@ $.fn.extend({
 
     jQuery.oFormFunctions = settings;
 
-    formSelector.submit(function(event){
-
-      event.preventDefault();
+    window.jQuery.oFormGlobals.submitListener = function(event){
 
       if(typeof settings.beforeLocal === 'function'){
 
@@ -339,7 +347,11 @@ $.fn.extend({
 
       event.preventDefault();
 
-    });
+    };
+
+    $(formSelector)[0].addEventListener('submit', window.jQuery.oFormGlobals.submitListener, false);
+
+    //formSelector.submit(submitListener);
 
   }
 

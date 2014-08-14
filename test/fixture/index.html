@@ -24,7 +24,7 @@
       <div class="row">
         <div class="col-md-4 col-md-offset-4">
           <p class=""></p>
-          <form method="POST" action="/whatever" role="form" novalidate>
+          <form method="POST" action="/whatever" role="form" id="form" novalidate>
             <div class="alert alert-error error-hide error-message">
               <p>Please correct the errors marked below.</p>
             </div>
@@ -59,7 +59,9 @@
           afterLocalHasRun = 0,
           beforeSubmitHasRun = 0,
           responseObject,
-          beforeSubmit = false;
+          beforeSubmit = false,
+          beforeSubmitTest = false,
+          customData;
       $(function(){
         //to test global form overrides
         $.oFormGlobalOverrides = {
@@ -104,7 +106,13 @@
 
             } else {
 
-              return true;
+              var data = {
+
+                custom: 'data'
+
+              };
+
+              return data;
 
             }
 
