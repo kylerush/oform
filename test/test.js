@@ -5,12 +5,6 @@ $(function(){
 
   nativeFunc = $.oFormDefaultFunctions;
 
-  QUnit.test('dummy test', function(){
-
-    QUnit.assert.equal(true, true);
-
-  });
-
   QUnit.test('email validation', function(){
 
     var validEmails, invalidEmails, i;
@@ -33,6 +27,8 @@ $(function(){
       [],
       undefined
     ];
+
+    QUnit.expect(validEmails.length + invalidEmails.length);
 
     for(i=0; i <= validEmails.length - 1; i++){
 
@@ -76,21 +72,25 @@ $(function(){
 
     ];
 
-      for(i=0; i <= validPhones.length - 1; i++){
+    QUnit.expect(validPhones.length + invalidPhones.length);
 
-        QUnit.assert.ok(nativeFunc.phoneIsValid(validPhones[i]), validPhones[i]);
+    for(i=0; i <= validPhones.length - 1; i++){
 
-      }
+      QUnit.assert.ok(nativeFunc.phoneIsValid(validPhones[i]), validPhones[i]);
 
-      for(i=0; i <= invalidPhones.length - 1; i++){
+    }
 
-        QUnit.assert.ok(!nativeFunc.phoneIsValid(invalidPhones[i]), invalidPhones[i]);
+    for(i=0; i <= invalidPhones.length - 1; i++){
 
-      }
+      QUnit.assert.ok(!nativeFunc.phoneIsValid(invalidPhones[i]), invalidPhones[i]);
+
+    }
 
   });
 
   QUnit.test('string has value', function(){
+
+    QUnit.expect(3);
 
     QUnit.assert.ok(nativeFunc.stringHasValue('foo'), 'actual string');
 
@@ -101,6 +101,8 @@ $(function(){
   });
 
   QUnit.test('checkbox is valid', function(){
+
+    QUnit.expect(2);
 
     var checkbox = $('#checkbox');
 
@@ -116,11 +118,15 @@ $(function(){
 
   QUnit.test('global overrides', function(){
 
+    QUnit.expect(1);
+
     QUnit.assert.ok(nativeFunc.overrideTestFunction(), 'executed');
 
   });
 
   QUnit.test('beforeLocal function', function(){
+
+    QUnit.expect(1);
 
     if(typeof nativeFunc.beforeLocal === 'function'){
 
@@ -132,6 +138,8 @@ $(function(){
 
   QUnit.test('beforeGlobal function', function(){
 
+    QUnit.expect(1);
+
     if(typeof nativeFunc.beforeGlobal === 'function'){
 
       QUnit.assert.ok(nativeFunc.beforeGlobal(), 'defined, executed');
@@ -141,6 +149,8 @@ $(function(){
   });
 
   QUnit.asyncTest('beforeSubmit', function(){
+
+    QUnit.expect(1);
 
     $('form').attr('action', '/success');
 
@@ -155,6 +165,8 @@ $(function(){
   });
 
   QUnit.test('check error/valid classes', function(){
+
+    QUnit.expect(7);
 
     QUnit.assert.ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
 
@@ -224,6 +236,8 @@ $(function(){
 
     QUnit.expect(10);
 
+    window.customData = 'object';
+
     $('form').attr('action', action);
 
     nativeFunc.submitData(function(){
@@ -244,9 +258,25 @@ $(function(){
 
       QUnit.assert.equal( typeof(window.responseObject.requestInfo), 'object', 'response jqXHR.requestInfo is type object');
 
-      QUnit.assert.equal(window.responseObject.requestInfo.data.custom, 'data', 'custom data works');
+      QUnit.assert.equal(window.responseObject.requestInfo.data.custom, 'data', 'custom data object works');
 
       QUnit.assert.ok(window.responseObject.requestInfo.url === action, 'requestInfo.url is ' + action);
+
+      QUnit.start();
+
+    });
+
+  });
+
+  QUnit.asyncTest('second submit test', function(){
+
+    QUnit.expect(1);
+
+    window.customData = 'string';
+
+    nativeFunc.submitData(function(){
+
+      QUnit.assert.equal(window.responseObject.requestInfo.data, 'custom="data"', 'custom data string works');
 
       QUnit.start();
 

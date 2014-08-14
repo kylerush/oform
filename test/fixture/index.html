@@ -98,6 +98,8 @@
 
           beforeSubmit: function(){
 
+            var data;
+
             window.beforeSubmitHasRun++;
 
             if(window.beforeSubmitHasRun <= 1){
@@ -106,11 +108,19 @@
 
             } else {
 
-              var data = {
+              if(customData === 'object'){
 
-                custom: 'data'
+                data = {
 
-              };
+                  custom: 'data'
+
+                };
+
+              } else if(customData === 'string') {
+
+                data = 'custom="data"';
+
+              }
 
               return data;
 
