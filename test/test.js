@@ -1,7 +1,7 @@
 /* global QUnit */
 $(function(){
 
-  var nativeFunc = $.oFormDefaultFunctions;
+  var nativeFunc = $.oFormDefaultFunctions, action;
 
   QUnit.test('dummy test', function(){
 
@@ -216,11 +216,11 @@ $(function(){
 
   });
 
+  action = 'http://www.mocky.io/v2/53ec2d0a5d62de440417fba5';
+
   QUnit.asyncTest('submit test', function(){
 
-    //QUnit.expect(8);
-
-    var action = 'http://www.mocky.io/v2/53ec2d0a5d62de440417fba5';
+    QUnit.expect(9);
 
     $('form').attr('action', action);
 
@@ -249,5 +249,26 @@ $(function(){
     });
 
   });
+  /*
+  QUnit.asyncTest('custom data', function(){
+
+    $('form').attr('action', action);
+
+    var data = {
+
+      firstName: 'Custom data'
+
+    };
+
+    nativeFunc.submitData(function(){
+
+      QUnit.assert.equal(window.responseObject.requestInfo, 'Custom data', 'Custom data matched.');
+
+    }, data);
+
+    QUnit.start();
+
+  });
+  */
 
 });
