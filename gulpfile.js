@@ -104,6 +104,13 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('checkFiles', function(){
+
+  var oFormTestFile = fs.readFileSync('./test/fixture/assets/oFormTest.js', {encoding: 'utf-8'});
+  console.log('oFormTestFile: ' + typeof(oFormTestFile) );
+
+});
+
 var error;
 
 gulp.task('qunit', function(done){
@@ -118,4 +125,4 @@ gulp.task('qunit', function(done){
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'qunit']);
+gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'checkFiles', 'qunit']);
