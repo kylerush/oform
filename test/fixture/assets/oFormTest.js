@@ -202,7 +202,7 @@ $.fn.extend({
 
     defaultOptions.submitData = function(callback){
 
-      var requestSettings, response;
+      var requestSettings, response, sendData;
 
       requestSettings = {
 
@@ -212,24 +212,46 @@ $.fn.extend({
 
       };
 
-      response = $.ajax(requestSettings);
+      sendData = function(){
 
-      response.always(function(){
+        response = $.ajax(requestSettings);
 
-        try{
+        response.always(function(){
 
-          response.responseJSON = $.parseJSON(response.responseText);
+          try{
 
-          response.requestInfo = requestSettings;
+            response.responseJSON = $.parseJSON(response.responseText);
 
-        } catch(error){
+            response.requestInfo = requestSettings;
 
+          } catch(error){
+
+
+          }
+
+          defaultOptions.executeAfterCallbacks(response, callback);
+
+        });
+
+      };
+
+      if(settings.beforeSubmit){
+
+        if(settings.beforeSubmit()){
+
+          sendData();
+
+        } else {
+
+          defaultOptions.executeAfterCallbacks(response, callback);
 
         }
 
-        defaultOptions.executeAfterCallbacks(response, callback);
+      } else {
 
-      });
+        sendData();
+
+      }
 
     };
 
