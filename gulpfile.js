@@ -1,60 +1,36 @@
 /* global require */
-var jshint = require('gulp-jshint'),
-  stylish = require('jshint-stylish'),
-  jsonlint = require('gulp-jsonlint'),
-  uglify = require('gulp-uglify'),
-  rename = require('gulp-rename'),
-  header = require('gulp-header'),
-  connect = require('gulp-connect'),
-  replace = require('gulp-replace'),
-  rename = require('gulp-rename'),
-  sass = require('gulp-sass'),
-  fs = require('fs');
-  qunit = require('node-qunit-phantomjs'),
-  gulp = require('gulp'),
-  clean = require('gulp-clean');
+var gulp = require('gulp');
 
 var testDir = 'test/fixture'
 
-gulp.task('lintJSON', function(){
-  gulp.src(['*.json', '.jshintrc'])
-    .pipe(jsonlint())
-    .pipe(jsonlint.reporter());
-});
-
 gulp.task('lintJS', function(){
+  var jshint = require('gulp-jshint'),
+      stylish = require('jshint-stylish');
   gulp.src(['*/**.js', '!**/*.min.js', '!bower_components', '!node_modules'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
 
-gulp.task('cleanAssets', function(){
-  gulp.src(testDir + '/assets/', {read: false})
-    .pipe(clean());
-});
-
 gulp.task('prepTestFiles', function(){
+  var replace = require('gulp-replace'),
+      rename = require('gulp-rename');
   gulp.src('src/oForm.js')
     .pipe(replace('/* expose default functions */', 'jQuery.oFormDefaultFunctions = defaultOptions;'))
     .pipe(replace('/* expose combined function */', 'jQuery.oFormFunctions = settings;'))
     .pipe(rename('oFormTest.js'))
     .pipe(gulp.dest(testDir + '/assets/'));
-  gulp.src([
-    'bower_components/qunit/qunit/qunit.js',
-    'bower_components/qunit/qunit/qunit.css',
-    'bower_components/jquery/jquery.js',
-    'src/assets/scss/javascripts/bootstrap.js'
-    ])
-      .pipe(gulp.dest(testDir + '/assets/'));
 });
 
 gulp.task('css', function(){
+  var sass = require('gulp-sass');
   gulp.src('src/assets/scss/stylesheets/styles.scss')
     .pipe(sass())
     .pipe(gulp.dest(testDir + '/assets/css/'));
 });
 
 gulp.task('connect', function(){
+  var connect = require('gulp-connect'),
+      fs = require('fs');
   connect.server({
     root: 'test',
     livereload: true,
@@ -63,12 +39,16 @@ gulp.task('connect', function(){
         function(req, res, next){
           if(req.method === 'POST'){
             if(req.url === '/success'){
-              res.writeHead(200, {'Content-Type': 'application/json'});
-              fs.readFile(testDir + '/assets/json/success.json',
+              fs.readFile(testDir + '/json/success.json',
               {
                 encoding: 'utf-8'
               },
               function(err, data){
+                if(err){
+                  res.writeHead(500, {'Content-Type': 'application/json'});
+                } else {
+                  res.writeHead(200, {'Content-Type': 'application/json'});
+                }
                 res.end(data);
               });
             }
@@ -82,6 +62,7 @@ gulp.task('connect', function(){
 });
 
 gulp.task('reloadHTML', function(){
+  var connect = require('gulp-connect');
   gulp.src(testDir + '/*.html')
     .pipe(connect.reload());
 });
@@ -93,6 +74,9 @@ gulp.task('watch', function(){
 });
 
 gulp.task('compress', function(){
+  var uglify = require('gulp-uglify'),
+      header = require('gulp-header'),
+      rename = require('gulp-rename');
   gulp.src('src/oForm.js')
     .pipe(uglify({mangle: false}))
     .pipe(header('/* oForm - Author: Kyle Rush - MIT license - https://github.com/kylerush/oform */ \n'))
@@ -100,18 +84,14 @@ gulp.task('compress', function(){
     .pipe(gulp.dest('dist'));
 });
 
-var error;
-
-gulp.task('qunit', function(done){
-  qunit('./test/fixture/index.html', {}, function(code){
-    if(code !== 0){
-      process.exit(1);
-    }
-  });
+gulp.task('qunit', function(){
+  var qunit = require('gulp-qunit');
+  return gulp.src('./test/fixture/index.html')
+         .pipe(qunit());
 });
-
-//gulp.task('test', ['prepTestFiles', 'css', 'qunit']);
 
 gulp.task('dev', ['prepTestFiles', 'css', 'connect', 'watch']);
 
-gulp.task('build', ['lintJSON', 'lintJS', 'compress', 'prepTestFiles', 'css', 'qunit']);
+gulp.task('test', ['lintJS', 'qunit']);
+
+gulp.task('build', ['lintJS', 'compress']);
