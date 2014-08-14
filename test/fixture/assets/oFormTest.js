@@ -241,7 +241,7 @@ $.fn.extend({
 
         beforeSubmitReturn = settings.beforeSubmit();
 
-        if( typeof(beforeSubmitReturn) === 'object' ){
+        if( typeof(beforeSubmitReturn) === 'object' || typeof(beforeSubmitReturn) === 'string' ){
 
           requestSettings.data = beforeSubmitReturn;
 
