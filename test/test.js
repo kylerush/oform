@@ -234,7 +234,7 @@ $(function(){
 
       QUnit.assert.equal(typeof(window.responseObject), 'object', 'response jqXHR is object type');
 
-      //QUnit.assert.equal( typeof(window.responseObject.responseJSON), 'object', 'response jqXHR.responseJSON is type object');
+      QUnit.assert.equal( typeof(window.responseObject.responseJSON), 'object', 'response jqXHR.responseJSON is type object');
 
       //QUnit.assert.equal( typeof(window.responseObject.responseJSON.success), boolean, 'window.responseObject.responseJSON.success === true');
 
