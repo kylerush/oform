@@ -171,6 +171,12 @@ useful to report validation errors to tracking platforms like Google Analytics.
 This function submits the form field data to the specified endpoint. It accepts
 one argument which is a callback function to execute after the function is done.
 
+###beforeSubmit
+
+This function will be executed before the plugin submits the form data. If the
+function returns `false` the plugin will stop executing. If the function returns
+`true` it will continue executing.
+
 ###beforeGlobal and beforeLocal: function
 
 These functions will be executed before any other plugin code is executed. If
