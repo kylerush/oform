@@ -349,9 +349,9 @@ $.fn.extend({
 
     };
 
-    $(formSelector)[0].addEventListener('submit', window.jQuery.oFormGlobals.submitListener, false);
+    //$(formSelector)[0].addEventListener('submit', window.jQuery.oFormGlobals.submitListener, false);
 
-    //formSelector.submit(submitListener);
+    formSelector.submit(window.jQuery.oFormGlobals.submitListener);
 
   }
 
