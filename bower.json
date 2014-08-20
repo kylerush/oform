@@ -1,7 +1,7 @@
 {
   "name": "oForm",
   "main": "oform.js",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "homepage": "https://github.com/kylerush/oform",
   "authors": [
     "Kyle Rush <kylerrush@gmail.com>"
@@ -21,7 +21,7 @@
     ".jshintrc"
   ],
   "dependencies": {
-    "jquery": "^1.6.4",
-    "qunit": "~1.14.0"
+    "jquery": ">=1.6.4",
+    "qunit": ">=1.14.0"
   }
 }
