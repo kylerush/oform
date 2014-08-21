@@ -104,13 +104,13 @@ $.fn.extend({
 
         });
 
+        if(element.attr('type') === 'checkbox'){
+
+          element.focus();
+
+        }
+
         settings.alertValidationError(element, isValid);
-
-      }
-
-      if(element.attr('type') === 'checkbox'){
-
-        element.focus();
 
       }
 
@@ -351,7 +351,13 @@ $.fn.extend({
 
     //$(formSelector)[0].addEventListener('submit', window.jQuery.oFormGlobals.submitListener, false);
 
-    formSelector.submit(window.jQuery.oFormGlobals.submitListener);
+    formSelector.submit(function(e){
+
+      window.jQuery.oFormGlobals.submitListener();
+
+      e.preventDefault();
+
+    });
 
   }
 

@@ -1,7 +1,7 @@
 {
   "name": "oForm",
   "main": "oform.js",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "homepage": "https://github.com/kylerush/oform",
   "authors": [
     "Kyle Rush <kylerrush@gmail.com>"
