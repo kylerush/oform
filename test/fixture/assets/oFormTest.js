@@ -88,7 +88,7 @@ $.fn.extend({
 
         element.removeClass('error-show');
 
-        $(relatedClass).each(function(index, value){
+        $('body').find(formSelector).find(relatedClass).each(function(index, value){
 
           $(value).removeClass('error-show');
 
@@ -307,7 +307,7 @@ $.fn.extend({
 
     jQuery.oFormFunctions = settings;
 
-    window.jQuery.oFormGlobals.submitListener = function(event){
+    window.jQuery.oFormGlobals.submitListener = function(){
 
       if(typeof settings.beforeLocal === 'function'){
 
@@ -344,8 +344,6 @@ $.fn.extend({
       }
 
       settings.submitData();
-
-      event.preventDefault();
 
     };
 
