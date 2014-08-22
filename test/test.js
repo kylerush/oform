@@ -152,7 +152,7 @@ $(function(){
 
     QUnit.expect(1);
 
-    $('form').attr('action', '/success');
+    $('#form').attr('action', '/success');
 
     nativeFunc.submitData(function(){
 
@@ -166,9 +166,9 @@ $(function(){
 
   QUnit.test('check error/valid classes', function(){
 
-    QUnit.expect(7);
+    QUnit.expect(8);
 
-    QUnit.assert.ok(!nativeFunc.validateFields({selector: $('form')}), 'validateFields returns false when fields are invalid');
+    QUnit.assert.ok(!nativeFunc.validateFields({selector: $('#form')}), 'validateFields returns false when fields are invalid');
 
     QUnit.assert.ok($('body').hasClass('error-state'), 'body error class present on error');
 
@@ -176,7 +176,7 @@ $(function(){
 
       var missingClass = 0;
 
-      $.each( $('form').find('input:not([type="hidden"])'), function(index, value){
+      $.each( $('#form').find('input:not([type="hidden"])'), function(index, value){
 
         if( !$(value).hasClass('error-show') ){
 
@@ -190,6 +190,25 @@ $(function(){
 
 
     })(), 'all fields have error class when values are invalid');
+
+    QUnit.assert.ok((function(){
+
+      var missingClass = 0;
+
+      $.each( $('#form2').find('input:not([type="hidden"])'), function(index, value){
+
+        if( $(value).hasClass('error-show') ){
+
+          missingClass++;
+
+        }
+
+      });
+
+      return missingClass === 0 ? true : false;
+
+
+    })(), 'no fields in second form have error class');
 
     QUnit.assert.ok($('.error-message').hasClass('error-show'), '.error message has .error-show class');
 
@@ -205,13 +224,13 @@ $(function(){
 
     $('#checkbox').prop('checked', true);
 
-    QUnit.assert.ok(nativeFunc.validateFields({selector: $('form')}), 'validateFields returns true when fields are valid');
+    QUnit.assert.ok(nativeFunc.validateFields({selector: $('#form')}), 'validateFields returns true when fields are valid');
 
     QUnit.assert.ok((function(){
 
       var hasErrorClass = 0;
 
-      $.each( $('form').find('input:not([type="hidden"])'), function(index, value){
+      $.each( $('#form').find('input:not([type="hidden"])'), function(index, value){
 
         if( $(value).hasClass('error-show') ){
 
@@ -224,7 +243,7 @@ $(function(){
       return hasErrorClass === 0 ? true : false;
 
 
-    })(), 'no field has error-show class when all fields are valid');
+    })(), 'no fields have error-show class when all fields are valid');
 
     QUnit.assert.ok(!$('.error-message').hasClass('error-show'), '.error message does not have .error-show class');
 
@@ -238,7 +257,7 @@ $(function(){
 
     window.customData = 'object';
 
-    $('form').attr('action', action);
+    $('#form').attr('action', action);
 
     nativeFunc.submitData(function(){
 
@@ -268,6 +287,26 @@ $(function(){
 
   });
 
+  var secondSubmitCallback = function(){
+
+    QUnit.asyncTest('actual submit test', function(){
+
+      QUnit.expect(1);
+
+      $('#form').submit();
+
+      setTimeout(function(){
+
+        QUnit.assert.ok(true, 'No JavaScript errors');
+
+        QUnit.start();
+
+      }, 1000);
+
+    });
+
+  };
+
   QUnit.asyncTest('second submit test', function(){
 
     QUnit.expect(1);
@@ -277,6 +316,8 @@ $(function(){
     nativeFunc.submitData(function(){
 
       QUnit.assert.equal(window.responseObject.requestInfo.data, 'custom="data"', 'custom data string works');
+
+      secondSubmitCallback();
 
       QUnit.start();
 
