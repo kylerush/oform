@@ -1,362 +1,397 @@
-$.fn.extend({
+(function(w,d){
 
-  oForm: function(options){
+  w.Oform = function(instanceOverrideOptions){
 
-    window.jQuery.oFormGlobals = window.jQuery.oFormGlobals || {};
+    var instance,
+        mergeObjects,
+        instanceDefaultOptions,
+        elements;
 
-    var defaultOptions, settings, formSelector;
+    instance = this;
 
-    formSelector = $(this);
+    instance.on = function(type, cb){
 
-    //setup all the default options
+      if(
 
-    defaultOptions = {};
+        type === 'abort' ||
+        type === 'error' ||
+        type === 'load' ||
+        type === 'loadend' ||
+        type === 'loadstart' ||
+        type === 'progress'
 
-    defaultOptions.validation = {};
+      ){
 
-    defaultOptions.validation.validators = {};
+        instance.options.xhr = instance.options.xhr || {};
 
-    defaultOptions.emailIsValid = function(email){
+        instance.options.xhr[type] = cb;
 
-      if(typeof email === 'string'){
+      } else {
+
+        instance.options[type] = cb;
+
+      }
+
+      return instance;
+
+    };
+
+    instance.run = function(event){
+
+      event.preventDefault();
+
+      var before,
+          invalidFields,
+          inputs,
+          data;
+
+      invalidFields = 0;
+
+      data = [];
+
+      if(typeof instance.options.before === 'function'){
+
+        before = instance.options.before() ? true : false;
+
+      } else {
+
+        before = true;
+
+      }
+
+      if(before){
+
+        inputs = d.querySelectorAll(instance.options.selector + ' input');
+
+        inputs = Array.prototype.slice.call(inputs);
+
+        inputs.forEach(function(item){
+
+          var type,
+              name,
+              value;
+
+          type = item.getAttribute('type');
+
+          name = item.getAttribute('name');
+
+          value = item.value;
+
+          if( item.hasAttribute('required') ){
+
+            if(
+
+              typeof instance.options.customValidation === 'object' &&
+
+              typeof instance.options.customValidation[name] === 'function'
+
+            ){
+
+              if( instance.options.customValidation[name](item) ){
+
+                instance.options.adjustClasses(item, true);
+
+              } else {
+
+                instance.options.adjustClasses(item, false);
+
+                if(typeof instance.options.onvalidationerror === 'function'){
+
+                  instance.options.onvalidationerror(item);
+
+                }
+
+                invalidFields++;
+
+              }
+
+            } else {
+
+              if( instance.options.validate[type] ){
+
+                instance.options.adjustClasses(item, true);
+
+              } else {
+
+                instance.options.adjustClasses(item, false);
+
+                if(typeof instance.options.onvalidationerror === 'function'){
+
+                  instance.options.onvalidationerror(item);
+
+                }
+
+                invalidFields++;
+
+              }
+
+            }
+
+          }
+
+          if(name) {
+
+            data.push( name + '=' + encodeURIComponent(value) );
+
+          }
+
+        });
+
+        data = data.join('&');
+
+      }
+
+      if(invalidFields === 0){
+
+        //run submit function
+        var request = new XMLHttpRequest();
+
+        if(typeof instance.options.xhr === 'object'){
+
+          for(var key in instance.options.xhr){
+
+            request['on' + key] = instance.options.xhr[key];
+
+          }
+
+          request.open('POST', event.target.getAttribute('action'), true);
+
+          request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+          if(typeof instance.options.middleware === 'function'){
+
+            data = instance.options.middleware(request, data);
+
+          }
+
+          request.send(data);
+
+        }
+
+      }
+
+      if(typeof instance.options.done === 'function'){
+
+        instance.options.done();
+
+      }
+
+      return instance;
+
+    };
+
+    mergeObjects = function (obj1,obj2){
+
+      var obj3,
+          attrname;
+
+      obj3 = {};
+
+      for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+
+      for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+
+      return obj3;
+    };
+
+    var validateString = function(element){
+
+      if(typeof element.value === 'string'){
+
+          if(element.value){
+
+            return true;
+
+          } else {
+
+            return false;
+
+          }
+
+      } else {
+
+        return false;
+
+      }
+
+    };
+
+    //default options
+    instanceDefaultOptions = {
+
+      selector: 'form',
+
+      errorHiddenClass: 'error-hidden',
+
+      errorShownClass: 'error-show',
+
+      validate: {
+
+        email: function(email){
+
+          var value;
+
+          if(typeof email === 'string'){
+
+            value = email;
+
+          } else {
+
+            value = email.value;
+
+          }
 
           var emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-          return emailRegEx.test(email);
+          return emailRegEx.test(value);
 
-      }
+        },
 
-      return false;
+        tel: function(phone){
 
-    };
+          var value;
 
-    defaultOptions.phoneIsValid = function(phone){
+          if(typeof phone === 'string'){
 
-      if(typeof phone === 'string'){
+            value = phone;
 
-        var phoneOnlyDigits = phone.replace(/\D/g, '');
+          } else {
 
-        if( phoneOnlyDigits.length >= 10 ){
-
-          return true;
-
-        } else {
-
-          return false;
-
-        }
-
-      }
-
-      return false;
-
-    };
-
-    defaultOptions.checkboxIsValid = function(checkbox){
-
-      return $(checkbox).prop('checked') ? true : false;
-
-    };
-
-    defaultOptions.stringHasValue = function(value){
-
-      if(typeof value === 'string'){
-
-          return value ? true : false;
-
-      }
-
-      return false;
-
-    };
-
-    defaultOptions.alertValidationError = function(element, isValid){
-
-      if(typeof settings.reportValidationError === 'function' && !isValid){
-
-        settings.reportValidationError(element);
-
-      }
-
-    };
-
-    defaultOptions.adjustClasses = function(element, isValid){
-
-      var relatedClass = '.' + element.attr('name') + '-related';
-
-      if(isValid){
-
-        element.removeClass('error-show');
-
-        $('body').find(formSelector).find(relatedClass).each(function(index, value){
-
-          $(value).removeClass('error-show');
-
-        });
-
-      } else {
-
-        element.addClass('error-show');
-
-        $(relatedClass).each(function(index, value){
-
-          $(value).addClass('error-show');
-
-        });
-
-        if(element.attr('type') === 'checkbox'){
-
-          element.focus();
-
-        }
-
-        settings.alertValidationError(element, isValid);
-
-      }
-
-      return isValid;
-
-    };
-
-    defaultOptions.validateFields = function(args){
-
-        var invalidFields = 0;
-
-        $.each( args.selector.find('input:not([type="hidden"]):not([type="submit"])'), function(index, value){
-
-          var element, dataValidation, elementValue, type, validate;
-
-          element = $(value);
-
-          dataValidation = $(element).attr('data-validation');
-
-          elementValue = element.val();
-
-          validate = function(valid){
-
-            if( !valid ){
-
-              invalidFields++;
-
-            }
-
-          };
-
-          if( dataValidation && settings.validation[dataValidation] ){
-
-            settings.adjustClasses(element, settings.validation[dataValidation](elementValue) );
-
-          } else if( element.attr('required') ){
-
-            type = element.attr('type');
-
-            switch(type){
-
-              case 'url':
-
-              case 'text':
-
-                validate( settings.adjustClasses(element, settings.stringHasValue(elementValue)) );
-
-                break;
-
-              case 'email':
-
-                validate( settings.adjustClasses(element, settings.emailIsValid(elementValue)) );
-
-                break;
-
-              case 'tel':
-
-                validate( settings.adjustClasses(element, settings.phoneIsValid(elementValue)) );
-
-                break;
-
-              case 'checkbox':
-
-                validate( settings.adjustClasses(element, settings.checkboxIsValid(element)) );
-
-            }
+            value = phone.value;
 
           }
 
-        });
+          var phoneOnlyDigits = value.replace(/\D/g, '');
 
-        if( invalidFields === 0 ){
+          return phoneOnlyDigits.length >= 10 ? true : false;
 
-          $('body').removeClass('error-state');
+        },
 
-          settings.adjustClasses(formSelector.find('.error-message'), true);
+        checkbox: function(checkbox){
 
-          return true;
+          return checkbox.checked ? true : false;
 
-        } else {
+        },
 
-          $('body').addClass('error-state');
+        text: validateString,
 
-          settings.adjustClasses(formSelector.find('.error-message'), false);
+        url: validateString,
 
-          return false;
+        password: validateString
 
-        }
+      },
 
-    };
+      adjustClasses: function(element, isValid){
 
-    defaultOptions.submitData = function(callback){
+        var relatedClass,
+            hasClass,
+            removeClass,
+            addClass,
+            relatedClasses;
 
-      var requestSettings, response, sendData, beforeSubmitReturn;
+        relatedClass = '.' + element.getAttribute('name') + '-related';
 
-      requestSettings = {
+        hasClass = function(ele,cls) {
 
-        type: 'POST',
-        url: formSelector.attr('action') || settings.url,
-        data: formSelector.serialize()
+          return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
 
-      };
+        };
 
-      sendData = function(){
+        addClass = function(ele,cls) {
 
-        response = $.ajax(requestSettings);
+          if ( !hasClass(ele,cls) ) {
 
-        response.always(function(){
-
-          try{
-
-            response.responseJSON = $.parseJSON(response.responseText);
-
-            response.requestInfo = requestSettings;
-
-          } catch(error){
-
+            ele.className += ' ' + cls;
 
           }
 
-          defaultOptions.executeAfterCallbacks(response, callback);
+        };
 
-        });
+        removeClass = function(ele,cls) {
 
-      };
+          if (hasClass(ele,cls)) {
 
-      if(settings.beforeSubmit){
+            var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
 
-        beforeSubmitReturn = settings.beforeSubmit();
+            ele.className=ele.className.replace(reg,' ');
 
-        if( typeof(beforeSubmitReturn) === 'object' || typeof(beforeSubmitReturn) === 'string' ){
+          }
 
-          requestSettings.data = beforeSubmitReturn;
+        };
 
-        }
+        if(isValid){
 
-        if(beforeSubmitReturn !== false){
+          removeClass(element, instance.options.errorShownClass);
 
-          sendData();
+          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+
+          relatedClasses = Array.prototype.slice.call(relatedClasses);
+
+          relatedClasses.forEach(function(item){
+
+            removeClass(item, instance.options.errorShownClass);
+
+          });
+
 
         } else {
 
-          defaultOptions.executeAfterCallbacks(response, callback);
+          addClass(element, instance.options.errorShownClass);
+
+          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+
+          relatedClasses = Array.prototype.slice.call(relatedClasses);
+
+          relatedClasses.forEach(function(item){
+
+            addClass(item, instance.options.errorShownClass);
+
+          });
 
         }
 
-      } else {
-
-        sendData();
+        return isValid;
 
       }
 
     };
 
-    defaultOptions.executeAfterCallbacks = function(response, callback){
+    //use instance overrides
+    instance.options = mergeObjects(instanceDefaultOptions, instanceOverrideOptions);
 
-      if(typeof settings.afterLocal === 'function'){
+    elements = d.querySelectorAll(instance.options.selector);
 
-        settings.afterLocal(response, settings.afterGlobal ? settings.afterGlobal : undefined);
+    elements = Array.prototype.slice.call(elements);
+    //attach a submit event listener to all the selected forms forms
 
-      } else {
+    elements.forEach(function(item){
 
-        if(typeof settings.afterGlobal === 'function'){
-
-            settings.afterGlobal(response);
-
-        }
-
-      }
-
-      if(typeof callback === 'function'){
-
-        callback();
-
-      }
-
-    };
-
-    defaultOptions.overrideTestFunction = function(){
-
-      return false;
-
-    };
-
-    jQuery.oFormDefaultFunctions = defaultOptions;
-
-    if( typeof jQuery.oFormGlobalOverrides === 'object'){
-
-      defaultOptions = $.extend(true, defaultOptions, jQuery.oFormGlobalOverrides);
-
-    }
-
-    settings = $.extend(true, defaultOptions, options);
-
-    jQuery.oFormFunctions = settings;
-
-    window.jQuery.oFormGlobals.submitListener = function(){
-
-      if(typeof settings.beforeLocal === 'function'){
-
-        if(settings.beforeLocal({selector: formSelector}) === false){
-
-          return false;
-
-        }
-
-      }
-
-      if(typeof settings.beforeGlobal === 'function'){
-
-        if(settings.beforeGlobal({selector: formSelector}) === false){
-
-          return false;
-
-        }
-
-      }
-
-      if(typeof settings.validateFields === 'function'){
-
-        var validFields = settings.validateFields({selector: formSelector});
-
-        if(validFields === false){
-
-          defaultOptions.executeAfterCallbacks(undefined);
-
-          return;
-
-        }
-
-      }
-
-      settings.submitData();
-
-    };
-
-    //$(formSelector)[0].addEventListener('submit', window.jQuery.oFormGlobals.submitListener, false);
-
-    formSelector.submit(function(e){
-
-      window.jQuery.oFormGlobals.submitListener();
-
-      e.preventDefault();
+      item.addEventListener('submit', instance.run, false);
 
     });
 
-  }
+    instance.remove = function(){
 
-});
+      //get the selected forms in the dom
+      var elements;
+
+      elements = d.querySelectorAll(instance.options.selector);
+
+      elements = Array.prototype.slice.call(elements);
+
+      //attach a submit event listener to all the selected forms forms
+      elements.forEach(function(item){
+
+        item.removeEventListener('submit', instance.run, false);
+
+      });
+
+      return instance;
+
+    };
+
+    return instance;
+
+  };
+
+})(window,document);

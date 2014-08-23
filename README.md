@@ -1,214 +1,260 @@
 oForm [![Build Status](http://img.shields.io/travis/kylerush/oform.svg?style=flat)](https://travis-ci.org/kylerush/oform)
 ==============
 
-> Lightweight jQuery plugin that handles form submissions in JavaScript.
+> A lightweight handler for forms.
 
-##Install
+## Install
+
+Using Bower:
 
 ```
 bower install oform --save
 ```
 
+Or you can copy/paste the source in dist/oform.min.js.
+
 ##Overview
 
-oForm catches the submit event on the form, prevents the default behavior and
-then does the following:
+oform is a flexible form handler function. Core features:
 
-* executes a `before` function if supplied
-* executes a field validation function, if the fields are all valid, it
-proceeds, if not, it stops
-* submits the data using an $.ajax request
-* executes an `after` function if supplied
+* Handles XHR POST for you
+* Client side validation for inputs
+* Lots of callback functions
+* Sensible default settings you can easily override
 
-See settings below for specifics on how each step works.
+## Usage
 
-##Usage
+Given this form:
 
-Basic usage:
+```html
+<form id="mailing-list" method="post" action="/email/list/join" novalidate>
+  <input name="email" type="email" required>
+  <input type="submit" value="Join email list">
+</form>
+```
 
-    $('form').oForm({url: '/whatever/path'});
+Bare bones implementation:
 
-Advanced usage:
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
 
-    $('form').oForm({
+## How it works
 
-        url: '/whatever/path',
-        beforeLocal: function(){ alert('hello'); },
-        afterLocal: function(){ alert('world!'); }
+Given the usage example above, when the form is submitted, Oform will validate
+the email field (since it has a required attribute) using a default validation
+function (though you can specify a different function) and if valid it will POST
+the data to `/email/list/join` and run the specified`on.load` function when
+finished.
 
-    });
+If the email address the user has entered is invalid, Oform will add/remove error
+classes to the element and any element with a class of `[element.name]-related`
+and it will not submit the form.
 
-##Settings
+See below for all the supported options, event handlers, and methods.
 
-You must pass required settings to the oForm method. Required settings have
-no default.
+## Options
 
-Settings that are not required have a default behavior which is described below.
-You can override the default behavior by adding a property with the same key
-as the setting name to the options object passed to oForm. Additionally, you can
-globally override the settings by defining a jQuery.oFormGlobalOverrides before
-the plugin executes as an object. That object will overwrite any methods with
-the same name.
+#### selector
 
-The advanced usage example above overrides the default behavior for the `before`
-and `after` settings.
+Type: `string`  
+Required: yes
 
-###url: string
+The `<form>` tag of which you want to apply oform. The selector can match one
+or many form tags. The string will be passed to document.querySelectorAll.
 
-The endpoint to which the form data with be POSTed. If this is not supplied
-the plugin will grab use the value of the `action` attribute on the form tag.
+#### errorHiddenClass and errorShownClass
 
-**Note: the following validation functions are only executed if there is a
-`required` attribute on the HTML dom node. If you want to run a validation
-function on an HTML node that is not required, use the `validation` setting.**
+Type: `string`  
+Required: no
+Default: `error-hidden` and `error-show`
 
-###emailIsValid: function
+If the input is valid, oform will remove the errorShownClass and apply the
+errorHiddenClass. It does the opposite if the input is invalid.
 
-Returns: `true` if the email is valid `false` if not.
+```js
+new Oform({
+  selector: '#mailing-list',
+  errorHiddenClass: 'error-hidden',
+  errorShownClass: 'error-show'
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
 
-This is the function that validates an email address. The function accepts one
-argument and that is the string of the email address.
+#### customValidation
 
-###phoneIsValid: function
+Type: `object`  
+Required: no
 
-Returns: `true` if the phone number is valid `false` if not.
+Provides the ability to specify custom validation functions. This is useful for things like
+validating that the `[name='password']` field meets security requirements or validating
+that the `[name='password']` and `[name='password-confirm']` fields are identical.
 
-This is the function that validates a phone number. The function accepts one
-argument and that is the string of the phone number.
+The object is a mapping of input name attribute and their custom validation function.
+For example, if you want to provide a custom validation function for the [name='password']
+field then you would have `password` as a property name in the object. The name of the
+property is the value of the `name` HTML attribute of the input.
 
-###checkboxIsValid: function
+Each custom validation function is passed the value of the input. The function switches
+the error classes on the DOM based on the return value. In the following example,
+if the `password` function return `false`, the `[name='password']` node and related fields
+will get the `errorShownClass` added and the `errorHiddenClass` removed and vice-versa
+if the return value is `true`.
 
-Returns: `true` if the checkbox is valid, `false` if not.
-
-This is the function that validates a checkbox. The function accepts one
-parameter and that is the checkbox DOM node.
-
-###urlIsValid: function
-
-Returns: `true` if the URL is valid, `false` if not.
-
-This is the function that validates a URL. The function accepts one argument and
-that is the string of the URL.
-
-###textIsValid: function
-
-Returns: `true` if the text is valid, `false` if not.
-
-This is the function that validates a `[type='text']` input. The function
-accepts one argument and that is the string of the node's value.
-
-###adjustClasses: function
-
-Returns: nothing
-
-This function adds/removes error classes from DOM elements. It accepts two
-arguments. The first argument is an HTML node. The second argument is a boolean
-value indicating if the DOM node is valid or not.
-
-For example, if the DOM node is `name="email` and the field is invalid, the
-function will do the following:
-
-* add an `error-show` class to any DOM node of `class="email-related"`
-
-If the field is valid, the function will do the opposite:
-
-* remove a `error-show` class to any DOM node of `class="email-related"`
-
-###validateFields: function
-
-This function validates all the form field values. If the form field has a
-`required` attribute then the function will validate it. By default the function
-uses the `type` attribute to decide how to validate the value of the node. For
-example, for `type="email"` the plugin will use the validation.validators.email
-function.
-
-If you want a different behavior than the default, see the `validation` setting.
-
-This function passes the return value from the specific validation function to
-adjustClasses.
-
-###validation
-
-This settings has no default. It provides you a way to override the default
-behavior for validating a form field.
-
-If you want to override the default behavior to validate a text
-input, you would do the following.
-
-1. Add a `data-validation` attribute with a value of the validation function (see example)
-2. Pass a `validation` property in the options object
-3. Add a validation function in the `validation` property that accepts one argument,
-which is the value of the form field
-
-For example, if you want to provide a custom validation function for a text input,
-your HTML should look like this:
-
-    <input type="text" required data-validation="hair" name="hair-color">
-
-And to initiate the jQuery plugin:
-
-    $('form').oForm({  
-      url: '/whatever-path',
-      validation: {
-        hair: function(value){
-          if(value.length >= 3){
-            return true;
-          } else {
-            return false;
-          }
-        }
+```js
+new Oform({
+  selector: '#create-account',
+  customValidation: {
+    password: function(val){
+      if(val.length >= 7){
+        return true;
+      } else {
+        return false;
       }
-    });
+    }
+  }
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
 
-###reportValidationError
+#### middleware
 
-This function is executed each time there is a validation error on a form field.
-It gets passed one argument and that is the DOM node that was invalid. This is
-useful to report validation errors to tracking platforms like Google Analytics.
+Type: `function`  
+Required: no
 
-###submitData
+Executes right before Oform runs XHR.send(). The function receives two arguments.
+The first argument is the XHR object and the second is the data string that the
+plugin will send with the POST request.
 
-This function submits the form field data to the specified endpoint. It accepts
-one argument which is a callback function to execute after the function is done.
+This function needs to return a data string or the plugin will error.
 
-###beforeSubmit
+This is useful if you want to format, encode, etc. the data before it is sent or
+if you want to modify the XHR object to add, say, custom headers.
 
-This function will be executed before the plugin submits the form data. If the
-function returns `false` the plugin will stop executing. If the function returns
-an object or a string the object/string will be used as the data for the POST
-request instead of the serialized form fields.
+```js
+new Oform({
+  selector: '#mailing-list',
+  middleware: function(XhrObj, data){
+    XhrObj.setRequestHeader('x-sent-with', 'oform');
+    return encodeData(data);
+  }
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
 
-###beforeGlobal and beforeLocal: function
+## Methods
 
-These functions will be executed before any other plugin code is executed. If
-either one of the functions return false then the plugin will not stop executing.
-The local function runs before the global function.
+### on
 
-The function is passed one argument which is an object. The object contains
-one property named 'selector' and the value is the jQuery selector from when
-the plugin was initiated.
+You can attach callback functions on all events using the `.on` method. See below
+for examples.
 
-###afterGlobal and afterLocal: function
+#### before
 
-Similar to the before functions, these functions will run after the plugin is
-finished executing. This could be after validation errors occur or after the
-plugin received data from the XHR request.
+Dispatches before oform does anything. If the function return false oform will
+stop executing.
 
-The local function executes first and is passed two arguments. The first is
-the response object from the jQuery jqXHR object XHR request. If no request was made the value of this argument will be undefined.
-The second argument is the afterGlobal function. If you have both an afterLocal
-and afterGlobal function then you need to execute the afterGlobal function by
-executing the argument when your afterLocal function is finished executing. This
-is because technically the plugin is still executing while the localAfter
-function is executing. If you don't have an afterGlobal function, this
-argument's value will be undefined. If you have only a globalAfter function,
-then plugin will execute it when it finishes since there is no localAfter
-function.
+```js
+new Oform({
+  selector: '#mailing-list',
+}).on('before', function(){
+  //before anything happens
+  return true;
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
 
-Note: The plugin adds two additional properties to the jqXHR object. The first is responseJSON and the value is the
-responseText formatted as JSON, assuming the response contained valid JSON. If
-the response did not contain valid JSON, the responseJSON property will not be
-defined. The second is requestInfo and the value is the settings object from the
-.ajax function so that you have access to request header type data.
+### validationError
 
-Use these functions to create your success or failure handlers.
+Dispatches when a validation error occurs on a form field. This is useful if you
+want to track validation errors with, say, Google Analytics or Optimizely.
+
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('validationError', function(element){
+    _gaq.push(
+      ['_trackEvent', 'form error', 'mailing list', element.getAttribute('name')]
+    );
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
+
+### xhr
+
+You can specify handler functions for any XHR event. See [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#Events)
+ and [nsIXMLHttpRequestEventTarget](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXMLHttpRequestEventTarget)
+ for more information.
+
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('abort', function(){
+  // A JavaScript function object that gets invoked if the operation is canceled by the user.
+}).on('error', function(){
+  // A JavaScript function object that gets invoked if the operation fails to complete due to an error.
+}).on('load', function(){
+  // A JavaScript function object that gets invoked when the operation is successfully completed.
+}).on('loadend', function(){
+  // A JavaScript function object that gets invoked when the operation is completed for any reason; it will always follow a an abort, error, or load event.
+}).on('loadstart', function(){
+  // A JavaScript function object that gets invoked exactly once when the operation begins.
+}).on('progress', function(){
+  // A JavaScript function object that gets invoked zero or more times, after the loadstart event, but before any abort, error, or load events occur.
+});
+```
+
+##### Known browser support for XHR event
+
+|  event    | Chrome  | Firefox | Safari 7+ |  IE10+  |  IE 9   |  IE 8   |
+|-----------|---------|---------|-----------|---------|---------|---------|
+| abort     |    ?    | ?       | ?         | ?       | ?       | ?       |
+| error     |    ?    |    ?    |     ?     |    ?    |    ?    |    ?    |
+| load      |    √    |    √    |     √     |    √    |    √    |    ?    |
+| loadend   |    √    |    √    |     √     |    √    |    X    |    ?    |
+| loadstart |    √    |    √    |     √     |    √    |    X    |    ?    |
+| progress  |    √    |    √    |     ?     |    ?    |    ?    |    ?    |
+
+
+### done
+
+Dispatches when the Oform instance has finished executing. This function receives
+no arguments.
+
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('done', function(){
+  //Oform instance is completely finished executing
+});
+```
+
+## remove
+
+To remove the Oform instance listener from a form you need to first save the
+Oform instance in a variable. Once the instance is in a variable, it can be removed
+like this:
+
+```js
+var mailingList = new Oform({
+  selector: '#mailing-list'
+}).on('load', function(){
+  window.alert('Thank you for joining our email list!');
+});
+
+mailingList.remove();
+```
+
+This effectively kills the instance of Oform for the `#mailing-list` form so
+that you can add another Oform instance if necessary.
+
+## Advanced usage

@@ -23,157 +23,183 @@
     <ol id="qunit-tests"></ol>
     <div class="container">
       <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4">
+          <h2 id="second-form-header">First form:</h2>
           <p class=""></p>
-          <form method="POST" action="/whatever" role="form" id="form" novalidate>
+          <form method="POST" action="/succcess" role="form" id="form1" novalidate>
             <div class="alert alert-error error-hide error-message">
               <p>Please correct the errors marked below.</p>
             </div>
             <div class="form-group">
               <label for="name">Name</label>
-              <input type="text" class="form-control" name="name" id="name" required>
+              <input type="text" class="form-control name" name="name" required>
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" class="form-control" name="email" id="email" required>
+              <input type="email" class="form-control email" name="email" required>
             </div>
             <div class="form-group">
               <label for="url">URL</label>
-              <input type="url" class="form-control" name="url" id="url" required>
+              <input type="url" class="form-control url" name="url" required>
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
-              <input type="tel" class="form-control" name="phone" id="phone" required>
+              <input type="tel" class="form-control phone" name="phone" required>
             </div>
             <div class="form-group">
-              <label><input type="checkbox" id="checkbox" required> I agree</label>
+              <label><input type="checkbox" class="checkbox" required> I agree</label>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4 col-md-offset-1">
           <h2 id="second-form-header">Second form:</h2>
-          <form method="POST" action="/whatever" role="form" id="form2" novalidate>
+          <form method="POST" action="/success" role="form" id="form2" novalidate>
             <div class="alert alert-error error-hide error-message">
               <p>Please correct the errors marked below.</p>
             </div>
             <div class="form-group">
               <label for="name">Name</label>
-              <input type="text" class="form-control" name="name" id="name" required>
+              <input type="text" class="form-control name" name="name" required>
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" class="form-control" name="email" id="email" required>
+              <input type="email" class="form-control email" name="email" required>
             </div>
             <div class="form-group">
               <label for="url">URL</label>
-              <input type="url" class="form-control" name="url" id="url" required>
+              <input type="url" class="form-control url" name="url" required>
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
-              <input type="tel" class="form-control" name="phone" id="phone" required>
+              <input type="tel" class="form-control phone" name="phone" required>
             </div>
             <div class="form-group">
-              <label><input type="checkbox" id="checkbox" required> I agree</label>
+              <label><input type="checkbox" class="checkbox" name="compliance" required> I agree</label>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
-      </div>
+      </div><!--/.row-->
+      <div class="row">
+        <div class="col-md-4">
+          <h2 id="second-form-header">Third form:</h2>
+          <p class=""></p>
+          <form method="POST" action="/success" role="form" id="form3" novalidate>
+            <div class="alert alert-error error-hide error-message">
+              <p>Please correct the errors marked below.</p>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control url" name="url" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control phone" name="phone" required>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" class="checkbox" required> I agree</label>
+            </div>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-md-4 col-md-offset-1">
+          <h2 id="second-form-header">Fourth form:</h2>
+          <form method="POST" action="/success" role="form" id="form4" novalidate>
+            <div class="alert alert-error error-hide error-message">
+              <p>Please correct the errors marked below.</p>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control name" name="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control email" name="email">
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control url" name="url">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control phone" name="phone">
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" class="checkbox" name="compliance"> I agree</label>
+            </div>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div><!--/.row-->
+      <div class="row">
+        <div class="col-md-4">
+          <h2 id="second-form-header">Fifth form:</h2>
+          <p class=""></p>
+          <form method="POST" action="/succcess" role="form" id="form5" novalidate>
+            <div class="alert alert-error error-hide error-message">
+              <p>Please correct the errors marked below.</p>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control url" name="url" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control phone" name="phone" required>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" class="checkbox" name="compliance" required> I agree</label>
+            </div>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-md-4 col-md-offset-1">
+          <h2 id="second-form-header">Sixth form:</h2>
+          <form method="POST" action="/success" role="form" id="form6" novalidate>
+            <div class="alert alert-error error-hide error-message">
+              <p>Please correct the errors marked below.</p>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="url">URL</label>
+              <input type="url" class="form-control url" name="url" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control phone" name="phone" required>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" class="checkbox" name="compliance" required> I agree</label>
+            </div>
+            <button type="submit" class="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div><!--/.row-->
     </div>
-    <script>
-      var beforeGlobalHasRun = 0,
-          beforeLocalHasRun = 0,
-          afterGlobalHasRun = 0,
-          afterLocalHasRun = 0,
-          beforeSubmitHasRun = 0,
-          responseObject,
-          beforeSubmit = false,
-          beforeSubmitTest = false,
-          customData;
-      $(function(){
-        //to test global form overrides
-        $.oFormGlobalOverrides = {
-          overrideTestFunction: function(){
-
-            return true;
-
-          },
-          beforeGlobal: function(){
-
-            window.beforeGlobalHasRun++;
-
-            return true;
-
-          },
-          afterGlobal: function(jqXHR){
-
-            window.afterGlobalHasRun++;
-
-            return true;
-
-          }
-        };
-
-        $('#form').oForm({
-
-          beforeLocal: function(){
-
-            window.beforeLocalHasRun++;
-
-            return true;
-
-          },
-
-          beforeSubmit: function(){
-
-            var data;
-
-            window.beforeSubmitHasRun++;
-
-            if(window.beforeSubmitHasRun <= 1){
-
-              return false;
-
-            } else {
-
-              if(customData === 'object'){
-
-                data = {
-
-                  custom: 'data'
-
-                };
-
-              } else if(customData === 'string') {
-
-                data = 'custom="data"';
-
-              }
-
-              return data;
-
-            }
-
-          },
-
-          afterLocal: function(jqXHR, callback){
-
-            window.afterLocalHasRun++;
-
-            responseObject = jqXHR;
-
-            callback(jqXHR);
-
-            return true;
-
-          }
-
-        });
-      });
-    </script>
     <script src="../test.js"></script>
   </body>
 </html>
