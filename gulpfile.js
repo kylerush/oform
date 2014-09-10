@@ -1,5 +1,6 @@
 /* global require */
-var gulp = require('gulp');
+var gulp = require('gulp'),
+    bodyParser = require('body-parser');
 
 var testDir = 'test/fixture'
 
@@ -34,8 +35,11 @@ gulp.task('connect', function(){
   connect.server({
     root: 'test',
     livereload: true,
+    host: '0.0.0.0',
     middleware: function(connect, options, middlewares){
       return[
+        connect().use( bodyParser.urlencoded({extended: true}) ),
+        connect.static(options.root),
         function(req, res, next){
           if(req.method === 'POST'){
             if(req.url === '/success'){
@@ -44,12 +48,20 @@ gulp.task('connect', function(){
                 encoding: 'utf-8'
               },
               function(err, data){
+                var responseBody = JSON.parse(data);
+                for(var propertyName in req.body){
+                  responseBody[propertyName] = req.body[propertyName];
+                }
+                responseBody.headers = {};
+                for(var propertyName in req.headers){
+                  responseBody.headers[propertyName] = req.headers[propertyName];
+                }
                 if(err){
                   res.writeHead(500, {'Content-Type': 'application/json'});
                 } else {
                   res.writeHead(200, {'Content-Type': 'application/json'});
                 }
-                res.end(data);
+                res.end( JSON.stringify(responseBody) );
               });
             }
           } else {
@@ -70,7 +82,7 @@ gulp.task('reloadHTML', function(){
 gulp.task('watch', function(){
   gulp.watch(['*/**.js', '!bower_component', '!node_modules', '!tests/assets'], ['lintJS', 'prepTestFiles', 'reloadHTML']);
   gulp.watch(['src/**/*.scss'], ['css']);
-  gulp.watch(['tests/*.html'], ['prepTestFiles', 'reloadHTML']);
+  gulp.watch(['test/**/*.html'], ['prepTestFiles', 'reloadHTML']);
 });
 
 gulp.task('compress', function(){

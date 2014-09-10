@@ -1,9 +1,45 @@
-/* global QUnit */
+/* global QUnit, Oform */
 $(function(){
 
-  var nativeFunc, action;
+  var w = window;
 
-  nativeFunc = $.oFormDefaultFunctions;
+  w.beforeTest = false;
+
+  var firstForm = new Oform({
+
+    selector: '#form1',
+
+    before: function(){
+
+      w.beforeTest = true;
+
+      return false;
+
+    }
+
+  });
+
+  var secondForm = new Oform({
+
+    selector: '#form2',
+
+    errorHiddenClass: 'error-hidden-i',
+
+    errorShownClass: 'error-show-i'
+
+  });
+
+  //w.window.console.log(firstForm);
+
+  //w.window.console.log(secondForm);
+
+  QUnit.test('initializations', function(){
+
+    QUnit.expect(1);
+
+    QUnit.assert.equal(secondForm.options.errorHiddenClass, 'error-hidden-i', 'instance override works');
+
+  });
 
   QUnit.test('email validation', function(){
 
@@ -21,35 +57,30 @@ $(function(){
       '.kylerrush@gmail.com',
       'kylerrush.@gmail.com',
       'kylerrush@gmail..com',
-      'kylerrush.gmail@com',
-      3,
-      {},
-      [],
-      undefined
+      'kylerrush.gmail@com'
     ];
 
     QUnit.expect(validEmails.length + invalidEmails.length);
 
     for(i=0; i <= validEmails.length - 1; i++){
 
-      QUnit.assert.ok(nativeFunc.emailIsValid(validEmails[i]), validEmails[i]);
+      QUnit.assert.ok(firstForm.options.validate.email(validEmails[i]), validEmails[i]);
 
     }
 
     for(i=0; i <= invalidEmails.length - 1; i++){
 
-      QUnit.assert.ok(!nativeFunc.emailIsValid(invalidEmails[i]), invalidEmails[i]);
+      QUnit.assert.ok(!firstForm.options.validate.email(invalidEmails[i]), invalidEmails[i]);
 
     }
 
   });
 
-  QUnit.test('phone is valid', function(){
+  QUnit.test('phone validation', function(){
 
     var validPhones, invalidPhones, i;
 
     validPhones = [
-
       //usa
       '8002529480',
       '(800) 252-9480',
@@ -60,268 +91,267 @@ $(function(){
       '+49 (0)30 56796902',
       //france
       '+33 (0) 9 70 40 63 33'
-
     ];
 
     invalidPhones = [
-
-      123,
-      [],
-      {},
-      undefined
-
+      '123'
     ];
 
     QUnit.expect(validPhones.length + invalidPhones.length);
 
     for(i=0; i <= validPhones.length - 1; i++){
 
-      QUnit.assert.ok(nativeFunc.phoneIsValid(validPhones[i]), validPhones[i]);
+      QUnit.assert.ok(firstForm.options.validate.tel(validPhones[i]), validPhones[i]);
 
     }
 
     for(i=0; i <= invalidPhones.length - 1; i++){
 
-      QUnit.assert.ok(!nativeFunc.phoneIsValid(invalidPhones[i]), invalidPhones[i]);
+      QUnit.assert.ok(!firstForm.options.validate.tel(invalidPhones[i]), invalidPhones[i]);
 
     }
 
   });
 
-  QUnit.test('string has value', function(){
-
-    QUnit.expect(3);
-
-    QUnit.assert.ok(nativeFunc.stringHasValue('foo'), 'actual string');
-
-    QUnit.assert.ok(!nativeFunc.stringHasValue(''), 'blank string');
-
-    QUnit.assert.ok(!nativeFunc.stringHasValue(3), 'number ');
-
-  });
-
-  QUnit.test('checkbox is valid', function(){
+  QUnit.test('string validation', function(){
 
     QUnit.expect(2);
 
-    var checkbox = $('#checkbox');
+    var name = document.querySelector('#form1 input[name="name"]');
 
-    checkbox.prop('checked', true);
+    name.value = 'test';
 
-    QUnit.assert.ok(nativeFunc.checkboxIsValid(checkbox), 'checkbox is checked');
+    QUnit.assert.ok(firstForm.options.validate.text(name), 'has value');
 
-    checkbox.prop('checked', false);
+    name.value = '';
 
-    QUnit.assert.ok(!nativeFunc.checkboxIsValid(checkbox), 'checkbox is not checked');
-
-  });
-
-  QUnit.test('global overrides', function(){
-
-    QUnit.expect(1);
-
-    QUnit.assert.ok(nativeFunc.overrideTestFunction(), 'executed');
+    QUnit.assert.ok(!firstForm.options.validate.text(name), 'blank string');
 
   });
 
-  QUnit.test('beforeLocal function', function(){
+  QUnit.test('checkbox validation', function(){
 
-    QUnit.expect(1);
+    QUnit.expect(2);
 
-    if(typeof nativeFunc.beforeLocal === 'function'){
+    var checkbox = document.querySelector('#form1 .checkbox');
 
-      QUnit.assert.ok(nativeFunc.beforeLocal(), 'defined, executed');
+    checkbox.checked = true;
 
-    }
+    QUnit.assert.ok(firstForm.options.validate.checkbox(checkbox), 'checkbox is checked');
 
-  });
+    checkbox.checked = false;
 
-  QUnit.test('beforeGlobal function', function(){
-
-    QUnit.expect(1);
-
-    if(typeof nativeFunc.beforeGlobal === 'function'){
-
-      QUnit.assert.ok(nativeFunc.beforeGlobal(), 'defined, executed');
-
-    }
+    QUnit.assert.ok(!firstForm.options.validate.checkbox(checkbox), 'checkbox is not checked');
 
   });
 
-  QUnit.asyncTest('beforeSubmit', function(){
+  QUnit.asyncTest('option: before', function(){
 
-    QUnit.expect(1);
+    QUnit.expect(2);
 
-    $('#form').attr('action', '/success');
+    firstForm.run({
 
-    nativeFunc.submitData(function(){
+      target: document.getElementById('form1'),
 
-      QUnit.assert.equal(window.beforeSubmitHasRun, 1, 'beforeSubmit has run');
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(w.beforeTest, 'before function executed');
+
+      QUnit.assert.ok(!$('#form1 input.name').hasClass('error-show'), 'form did not submit');
 
       QUnit.start();
 
-    });
+    }, 500);
 
   });
 
-  QUnit.test('check error/valid classes', function(){
-
-    QUnit.expect(8);
-
-    QUnit.assert.ok(!nativeFunc.validateFields({selector: $('#form')}), 'validateFields returns false when fields are invalid');
-
-    QUnit.assert.ok($('body').hasClass('error-state'), 'body error class present on error');
-
-    QUnit.assert.ok((function(){
-
-      var missingClass = 0;
-
-      $.each( $('#form').find('input:not([type="hidden"])'), function(index, value){
-
-        if( !$(value).hasClass('error-show') ){
-
-          missingClass++;
-
-        }
-
-      });
-
-      return missingClass === 0 ? true : false;
-
-
-    })(), 'all fields have error class when values are invalid');
-
-    QUnit.assert.ok((function(){
-
-      var missingClass = 0;
-
-      $.each( $('#form2').find('input:not([type="hidden"])'), function(index, value){
-
-        if( $(value).hasClass('error-show') ){
-
-          missingClass++;
-
-        }
-
-      });
-
-      return missingClass === 0 ? true : false;
-
-
-    })(), 'no fields in second form have error class');
-
-    QUnit.assert.ok($('.error-message').hasClass('error-show'), '.error message has .error-show class');
-
-    //enter valid data and verify that classes were removed
-
-    $('#name').val('John Doe');
-
-    $('#email').val('johndoe@jupiter.net');
-
-    $('#url').val('http://kylerush.net');
-
-    $('#phone').val('(760) 874-4483');
-
-    $('#checkbox').prop('checked', true);
-
-    QUnit.assert.ok(nativeFunc.validateFields({selector: $('#form')}), 'validateFields returns true when fields are valid');
-
-    QUnit.assert.ok((function(){
-
-      var hasErrorClass = 0;
-
-      $.each( $('#form').find('input:not([type="hidden"])'), function(index, value){
-
-        if( $(value).hasClass('error-show') ){
-
-          hasErrorClass++;
-
-        }
-
-      });
-
-      return hasErrorClass === 0 ? true : false;
-
-
-    })(), 'no fields have error-show class when all fields are valid');
-
-    QUnit.assert.ok(!$('.error-message').hasClass('error-show'), '.error message does not have .error-show class');
-
-  });
-
-  action = 'http://www.mocky.io/v2/53ec2d0a5d62de440417fba5';
-
-  QUnit.asyncTest('submit test', function(){
-
-    QUnit.expect(10);
-
-    window.customData = 'object';
-
-    $('#form').attr('action', action);
-
-    nativeFunc.submitData(function(){
-
-      QUnit.assert.equal(window.beforeSubmitHasRun, 2, 'afterLocal executed');
-
-      QUnit.assert.equal(window.afterLocalHasRun, 2, 'afterLocal executed');
-
-      QUnit.assert.equal(window.afterGlobalHasRun, 2, 'afterGlobal executed');
-
-      QUnit.assert.equal(typeof(window.responseObject), 'object', 'response jqXHR is object type');
-
-      QUnit.assert.equal( typeof(window.responseObject.responseJSON), 'object', 'response jqXHR.responseJSON is type object');
-
-      QUnit.assert.equal( typeof(window.responseObject.responseJSON.success), 'boolean', 'window.responseObject.responseJSON.success === true');
-
-      QUnit.assert.ok(window.responseObject.responseJSON.testProperty === 1, 'window.responseObject.responseJSON.testProperty === 1');
-
-      QUnit.assert.equal( typeof(window.responseObject.requestInfo), 'object', 'response jqXHR.requestInfo is type object');
-
-      QUnit.assert.equal(window.responseObject.requestInfo.data.custom, 'data', 'custom data object works');
-
-      QUnit.assert.ok(window.responseObject.requestInfo.url === action, 'requestInfo.url is ' + action);
-
-      QUnit.start();
-
-    });
-
-  });
-
-  var secondSubmitCallback = function(){
-
-    QUnit.asyncTest('actual submit test', function(){
-
-      QUnit.expect(1);
-
-      $('#form').submit();
-
-      setTimeout(function(){
-
-        QUnit.assert.ok(true, 'No JavaScript errors');
-
-        QUnit.start();
-
-      }, 1000);
-
-    });
-
-  };
-
-  QUnit.asyncTest('second submit test', function(){
+  QUnit.asyncTest('option: customValidation', function(){
 
     QUnit.expect(1);
 
-    window.customData = 'string';
+    $('#form3 .email').val('test@test.com');
 
-    nativeFunc.submitData(function(){
+    new Oform({
 
-      QUnit.assert.equal(window.responseObject.requestInfo.data, 'custom="data"', 'custom data string works');
+      selector: '#form3',
 
-      secondSubmitCallback();
+      customValidation: {
+
+        email: function(){
+
+          return false;
+
+        }
+
+      }
+
+    }).run({
+
+      target: document.getElementById('form3'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok($('#form3 input.email').hasClass('error-show'), 'custom validation worked');
 
       QUnit.start();
 
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('option: middleware', function(){
+
+    QUnit.expect(2);
+
+    new Oform({
+
+      selector: '#form4',
+
+      middleware: function(XhrObj){
+
+        XhrObj.setRequestHeader('x-requested-with', 'Oform');
+
+        return 'middleware=success';
+
+      }
+
+    }).on('load', function(response){
+
+      w.middlewareData = JSON.parse(response.target.responseText);
+
+    }).run({
+
+      target: document.getElementById('form4'),
+
+      preventDefault: function(){}
+
     });
+
+    setTimeout(function(){
+
+      QUnit.assert.equal(w.middlewareData.headers['x-requested-with'], 'Oform', 'middleware headers worked');
+
+      QUnit.assert.equal(w.middlewareData.middleware, 'success', 'middleware data succcess');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('testing on handlers', function(){
+
+    w.validationErrorTest = [];
+
+    w.loadTest = false;
+
+    w.loadendTest = false;
+
+    w.loadStartTest = false;
+
+    w.doneTest = false;
+
+    window.form5 = new Oform({
+
+      selector: '#form5'
+
+    }).on('validationError', function(element){
+
+      w.validationErrorTest.push(element.getAttribute('name'));
+
+    }).on('load', function(){
+
+      w.loadTest = true;
+
+    }).on('loadend', function(){
+
+      w.loadendTest = true;
+
+    }).on('loadstart', function(){
+
+      w.loadStartTest = true;
+
+    }).on('done', function(){
+
+      w.doneTest = true;
+
+    }).run({
+
+      target: document.getElementById('form4'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      var fields = document.querySelectorAll('#form5 input[required]');
+
+      fields = Array.prototype.slice.call(fields);
+
+      fields.forEach(function(input){
+
+        QUnit.assert.equal(input.getAttribute('required'), '', input.getAttribute('name') + ' onvalidationerror worked correctly');
+
+      });
+
+      QUnit.assert.ok(w.loadTest, 'xhr.load worked');
+
+      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked');
+
+      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked');
+
+      QUnit.assert.ok(w.doneTest, 'on.done worked');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('remove method', function(){
+
+    w.doneTest = false;
+
+    var form6 = new Oform({
+
+      selector: '#form6'
+
+    }).on('done', function(){
+
+      w.doneTest = true;
+
+    });
+
+    form6.remove();
+
+    $('form6').submit();
+
+    /*
+    form6.run({
+
+      target: document.getElementById('form6'),
+
+      preventDefault: function(){}
+
+    });
+    */
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(!w.doneTest, 'remove method worked');
+
+      QUnit.start();
+
+    }, 500);
 
   });
 
