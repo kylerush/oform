@@ -95,9 +95,9 @@
 
                 instance.options.adjustClasses(item, false);
 
-                if(typeof instance.options.onvalidationerror === 'function'){
+                if(typeof instance.options.validationerror === 'function'){
 
-                  instance.options.onvalidationerror(item);
+                  instance.options.validationerror(item);
 
                 }
 
@@ -107,7 +107,7 @@
 
             } else {
 
-              if( instance.options.validate[type] ){
+              if( instance.options.validate[type](item) ){
 
                 instance.options.adjustClasses(item, true);
 
@@ -115,9 +115,9 @@
 
                 instance.options.adjustClasses(item, false);
 
-                if(typeof instance.options.onvalidationerror === 'function'){
+                if(typeof instance.options.validationerror === 'function'){
 
-                  instance.options.onvalidationerror(item);
+                  instance.options.validationerror(item);
 
                 }
 
@@ -141,7 +141,7 @@
 
       }
 
-      if(invalidFields === 0){
+      if(invalidFields === 0 && before){
 
         //run submit function
         var request = new XMLHttpRequest();
