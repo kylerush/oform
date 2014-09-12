@@ -1,7 +1,7 @@
 oForm [![Build Status](http://img.shields.io/travis/kylerush/oform.svg?style=flat)](https://travis-ci.org/kylerush/oform)
 ==============
 
-> A lightweight handler for forms.
+> A lightweight handler for forms with no dependencies. Compatible with IE9+.
 
 ## Install
 
@@ -56,6 +56,20 @@ classes to the element and any element with a class of `[element.name]-related`
 and it will not submit the form.
 
 See below for all the supported options, event handlers, and methods.
+
+### Notes
+
+Oform currently has default validation functions for these types of inputs:
+
+* email (checks for a real email)
+* tel (removes non-digits, looks for at least 10 digits)
+* url (looks for a non-empty string)
+* checkbox
+* text (looks for non-empty string)
+* password (looks for non-empty string)
+
+You can extend Oform to validate more input types by using the `customValidation`
+option specified below.
 
 ## Options
 
@@ -258,3 +272,22 @@ This effectively kills the instance of Oform for the `#mailing-list` form so
 that you can add another Oform instance if necessary.
 
 ## Advanced usage
+
+Coming soon.
+
+## Contributing
+
+Issues and pull requests are very much appreciated. If you plan on submitting a
+pull request please open an issue first to discuss it.
+
+When adding code, make sure that your code passes the existing tests, but also
+create a new test. You can run the test suite by running `gulp dev` and visiting
+http://0.0.0.0:8080/fixture/ in your browser. Please run the test suite in the
+following browsers:
+
+* Chrome
+* Firefox
+* Safari 7
+* IE 11
+* IE 10
+* IE 9

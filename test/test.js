@@ -249,7 +249,15 @@ $(function(){
 
   QUnit.asyncTest('testing on handlers', function(){
 
-    w.validationErrorTest = [];
+    $('#form6 .email').val('form6@test.com');
+
+    $('#form6 .name').val('jane doe');
+
+    $('#form6 .url').val('http://www.google.com');
+
+    $('#form6 .phone').val('6489589837');
+
+    $('#form6 .checkbox').attr('checked', true);
 
     w.loadTest = false;
 
@@ -261,11 +269,7 @@ $(function(){
 
     window.form5 = new Oform({
 
-      selector: '#form5'
-
-    }).on('validationError', function(element){
-
-      w.validationErrorTest.push(element.getAttribute('name'));
+      selector: '#form6'
 
     }).on('load', function(){
 
@@ -285,7 +289,7 @@ $(function(){
 
     }).run({
 
-      target: document.getElementById('form4'),
+      target: document.getElementById('form6'),
 
       preventDefault: function(){}
 
@@ -293,7 +297,7 @@ $(function(){
 
     setTimeout(function(){
 
-      var fields = document.querySelectorAll('#form5 input[required]');
+      var fields = document.querySelectorAll('#form6 input[required]');
 
       fields = Array.prototype.slice.call(fields);
 
@@ -317,6 +321,7 @@ $(function(){
 
   });
 
+
   QUnit.asyncTest('remove method', function(){
 
     w.doneTest = false;
@@ -335,19 +340,87 @@ $(function(){
 
     $('form6').submit();
 
-    /*
-    form6.run({
+    setTimeout(function(){
 
-      target: document.getElementById('form6'),
+      QUnit.assert.ok(!w.doneTest, 'remove method worked');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('validation errors test', function(){
+
+    QUnit.expect(2);
+
+    w.invalidFieldsTest = true;
+
+    w.validationErrors = [];
+
+    new Oform({
+
+      selector: '#form7'
+
+    }).on('validationerror', function(){
+
+      w.validationErrors.push('error');
+
+    }).on('load', function(){
+
+      w.invalidFieldsTest = false;
+
+    }).on('done', function(){
+
+    }).run({
+
+      target: document.getElementById('form7'),
 
       preventDefault: function(){}
 
     });
-    */
 
     setTimeout(function(){
 
-      QUnit.assert.ok(!w.doneTest, 'remove method worked');
+      QUnit.assert.ok(w.invalidFieldsTest, 'form didn\'t submit with errors');
+
+      QUnit.assert.equal(w.validationErrors.length, 5, 'on validationerror worked');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('before false, no validation errors, no submit', function(){
+
+    QUnit.expect(1);
+
+    w.beforeFalseNoErrorsNoSubmit = true;
+
+    new Oform({
+
+      selector: '#form8'
+
+    }).on('before', function(){
+
+      return false;
+
+    }).on('load', function(){
+
+      w.beforeFalseNoErrorsNoSubmit = false;
+
+    }).run({
+
+      target: document.getElementById('form8'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(w.beforeFalseNoErrorsNoSubmit, 'form didn\'t submit');
 
       QUnit.start();
 
