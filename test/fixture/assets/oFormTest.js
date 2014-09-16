@@ -131,7 +131,19 @@
 
           if(name) {
 
-            data.push( name + '=' + encodeURIComponent(value) );
+            if(type === 'checkbox'){
+
+              if(item.checked){
+
+                data.push( name + '=' + encodeURIComponent(value) );
+
+              }
+
+            } else {
+
+              data.push( name + '=' + encodeURIComponent(value) );
+
+            }
 
           }
 
@@ -323,6 +335,8 @@
 
           removeClass(element, instance.options.errorShownClass);
 
+          addClass(element, instance.options.errorHiddenClass);
+
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
           relatedClasses = Array.prototype.slice.call(relatedClasses);
@@ -331,12 +345,16 @@
 
             removeClass(item, instance.options.errorShownClass);
 
+            addClass(item, instance.options.errorHiddenClass);
+
           });
 
 
         } else {
 
           addClass(element, instance.options.errorShownClass);
+
+          removeClass(element, instance.options.errorHiddenClass);
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
@@ -345,6 +363,8 @@
           relatedClasses.forEach(function(item){
 
             addClass(item, instance.options.errorShownClass);
+
+            removeClass(item, instance.options.errorHiddenClass);
 
           });
 

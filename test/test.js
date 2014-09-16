@@ -267,7 +267,7 @@ $(function(){
 
     w.doneTest = false;
 
-    window.form5 = new Oform({
+    window.form6 = new Oform({
 
       selector: '#form6'
 
@@ -315,6 +315,8 @@ $(function(){
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
+      QUnit.assert.ok($('#form6 .name').hasClass(w.form6.options.errorHiddenClass), 'remove error class worked');
+
       QUnit.start();
 
     }, 500);
@@ -352,13 +354,13 @@ $(function(){
 
   QUnit.asyncTest('validation errors test', function(){
 
-    QUnit.expect(2);
+    QUnit.expect(3);
 
     w.invalidFieldsTest = true;
 
     w.validationErrors = [];
 
-    new Oform({
+    w.form7 = new Oform({
 
       selector: '#form7'
 
@@ -385,6 +387,8 @@ $(function(){
       QUnit.assert.ok(w.invalidFieldsTest, 'form didn\'t submit with errors');
 
       QUnit.assert.equal(w.validationErrors.length, 5, 'on validationerror worked');
+
+      QUnit.assert.ok($('#form7 .name').hasClass(w.form7.options.errorShownClass), 'add error class worked');
 
       QUnit.start();
 
