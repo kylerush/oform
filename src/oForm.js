@@ -131,7 +131,19 @@
 
           if(name) {
 
-            data.push( name + '=' + encodeURIComponent(value) );
+            if(type === 'checkbox'){
+              
+              if(item.checked){
+
+                data.push( name + '=' + encodeURIComponent(value) );
+
+              }
+
+            } else {
+
+              data.push( name + '=' + encodeURIComponent(value) );
+
+            }
 
           }
 

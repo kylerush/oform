@@ -114,7 +114,7 @@ For example, if you want to provide a custom validation function for the [name='
 field then you would have `password` as a property name in the object. The name of the
 property is the value of the `name` HTML attribute of the input.
 
-Each custom validation function is passed the value of the input. The function switches
+Each custom validation function is passed the HTML element of the input. The function switches
 the error classes on the DOM based on the return value. In the following example,
 if the `password` function return `false`, the `[name='password']` node and related fields
 will get the `errorShownClass` added and the `errorHiddenClass` removed and vice-versa
@@ -124,8 +124,8 @@ if the return value is `true`.
 new Oform({
   selector: '#create-account',
   customValidation: {
-    password: function(val){
-      if(val.length >= 7){
+    password: function(element){
+      if(element.value.length >= 7){
         return true;
       } else {
         return false;
@@ -186,7 +186,7 @@ new Oform({
 });
 ```
 
-### validationError
+### validationerror
 
 Dispatches when a validation error occurs on a form field. This is useful if you
 want to track validation errors with, say, Google Analytics or Optimizely.
@@ -194,7 +194,7 @@ want to track validation errors with, say, Google Analytics or Optimizely.
 ```js
 new Oform({
   selector: '#mailing-list'
-}).on('validationError', function(element){
+}).on('validationerror', function(element){
     _gaq.push(
       ['_trackEvent', 'form error', 'mailing list', element.getAttribute('name')]
     );
