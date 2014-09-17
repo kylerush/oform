@@ -155,6 +155,12 @@
 
       if(invalidFields === 0 && before){
 
+        if(typeof instance.options.bodyErrorClass === 'string'){
+
+          instance.options.removeClass( document.getElementsByTagName('body')[0], instance.options.bodyErrorClass );
+
+        }
+
         //run submit function
         var request = new XMLHttpRequest();
 
@@ -177,6 +183,14 @@
           }
 
           request.send(data);
+
+        }
+
+      } else {
+
+        if(typeof instance.options.bodyErrorClass === 'string'){
+
+          instance.options.addClass( document.getElementsByTagName('body')[0], instance.options.bodyErrorClass );
 
         }
 
@@ -233,9 +247,9 @@
 
       selector: 'form',
 
-      errorHiddenClass: 'error-hidden',
+      errorShowClass: 'oform-error-show',
 
-      errorShownClass: 'error-show',
+      bodyErrorClass: 'oform-error',
 
       validate: {
 
@@ -293,49 +307,44 @@
 
       },
 
+      hasClass: function(ele,cls) {
+
+        return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+
+      },
+
+      addClass: function(ele,cls) {
+
+        if ( !instance.options.hasClass(ele,cls) ) {
+
+          ele.className += ' ' + cls;
+
+        }
+
+      },
+
+      removeClass: function(ele,cls) {
+
+        if (instance.options.hasClass(ele,cls)) {
+
+          var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+
+          ele.className=ele.className.replace(reg,' ');
+
+        }
+
+      },
+
       adjustClasses: function(element, isValid){
 
         var relatedClass,
-            hasClass,
-            removeClass,
-            addClass,
             relatedClasses;
 
         relatedClass = '.' + element.getAttribute('name') + '-related';
 
-        hasClass = function(ele,cls) {
-
-          return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
-
-        };
-
-        addClass = function(ele,cls) {
-
-          if ( !hasClass(ele,cls) ) {
-
-            ele.className += ' ' + cls;
-
-          }
-
-        };
-
-        removeClass = function(ele,cls) {
-
-          if (hasClass(ele,cls)) {
-
-            var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
-
-            ele.className=ele.className.replace(reg,' ');
-
-          }
-
-        };
-
         if(isValid){
 
-          removeClass(element, instance.options.errorShownClass);
-
-          addClass(element, instance.options.errorHiddenClass);
+          instance.options.removeClass(element, instance.options.errorShowClass);
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
@@ -343,18 +352,14 @@
 
           relatedClasses.forEach(function(item){
 
-            removeClass(item, instance.options.errorShownClass);
-
-            addClass(item, instance.options.errorHiddenClass);
+            instance.options.removeClass(item, instance.options.errorShowClass);
 
           });
 
 
         } else {
 
-          addClass(element, instance.options.errorShownClass);
-
-          removeClass(element, instance.options.errorHiddenClass);
+          instance.options.addClass(element, instance.options.errorShowClass);
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
@@ -362,9 +367,7 @@
 
           relatedClasses.forEach(function(item){
 
-            addClass(item, instance.options.errorShownClass);
-
-            removeClass(item, instance.options.errorHiddenClass);
+            instance.options.addClass(item, instance.options.errorShowClass);
 
           });
 

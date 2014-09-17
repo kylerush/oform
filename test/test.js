@@ -191,7 +191,7 @@ $(function(){
 
     }).run({
 
-      target: document.getElementById('form3'),
+      target: document.getElementById('#form3'),
 
       preventDefault: function(){}
 
@@ -199,7 +199,7 @@ $(function(){
 
     setTimeout(function(){
 
-      QUnit.assert.ok($('#form3 input.email').hasClass('error-show'), 'custom validation worked');
+      QUnit.assert.ok($('#form3 input.email').hasClass('oform-error-show'), 'custom validation worked');
 
       QUnit.start();
 
@@ -315,7 +315,7 @@ $(function(){
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
-      QUnit.assert.ok($('#form6 .name').hasClass(w.form6.options.errorHiddenClass), 'remove error class worked');
+      QUnit.assert.ok(!$('#form6 .name').hasClass(w.form6.options.errorShowClass), 'remove error class worked');
 
       QUnit.start();
 
@@ -354,7 +354,7 @@ $(function(){
 
   QUnit.asyncTest('validation errors test', function(){
 
-    QUnit.expect(3);
+    QUnit.expect(4);
 
     w.invalidFieldsTest = true;
 
@@ -388,7 +388,9 @@ $(function(){
 
       QUnit.assert.equal(w.validationErrors.length, 5, 'on validationerror worked');
 
-      QUnit.assert.ok($('#form7 .name').hasClass(w.form7.options.errorShownClass), 'add error class worked');
+      QUnit.assert.ok($('#form7 .name').hasClass(w.form7.options.errorShowClass), 'add error class worked');
+
+      QUnit.assert.ok($('body').hasClass(w.form7.options.bodyErrorClass), 'body error class worked');
 
       QUnit.start();
 
