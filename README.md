@@ -77,24 +77,24 @@ option specified below.
 
 Type: `string`  
 Required: yes
+Default: none
 
 The `<form>` tag of which you want to apply oform. The selector can match one
 or many form tags. The string will be passed to document.querySelectorAll.
 
-#### errorHiddenClass and errorShownClass
+#### errorShowClass
 
 Type: `string`  
 Required: no
-Default: `error-hidden` and `error-show`
+Default: `oform-error-show`
 
-If the input is valid, oform will remove the errorShownClass and apply the
-errorHiddenClass. It does the opposite if the input is invalid.
+If the input is invalid Oform will add the errorShowClass. If the input is valid
+Oform will remove the errorShowClass.
 
 ```js
 new Oform({
   selector: '#mailing-list',
-  errorHiddenClass: 'error-hidden',
-  errorShownClass: 'error-show'
+  errorShowClass: 'error-show'
 }).on('load', function(event){
   window.alert('Thank you for joining our email list!');
 });
@@ -104,6 +104,7 @@ new Oform({
 
 Type: `object`  
 Required: no
+Default: none
 
 Provides the ability to specify custom validation functions. This is useful for things like
 validating that the `[name='password']` field meets security requirements or validating
@@ -132,6 +133,35 @@ new Oform({
       }
     }
   }
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
+
+####bodyErrorClass
+
+Type: `string`
+Required: no
+Default: 'oform-error'
+
+Oform can add a class to the `<body>` when validation errors occur and remove it
+when no validation errors occur. You can customize the class:
+
+```js
+new Oform({
+  selector: '#create-account',
+  bodyErrorClass: 'custom-error-class'
+}).on('load', function(event){
+  window.alert('Thank you for joining our email list!');
+});
+```
+
+You can also disable this behavior:
+
+```js
+new Oform({
+  selector: '#create-account',
+  bodyErrorClass: null
 }).on('load', function(event){
   window.alert('Thank you for joining our email list!');
 });
