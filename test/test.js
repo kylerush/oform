@@ -271,6 +271,9 @@ $(function(){
 
       selector: '#form6'
 
+    }).on('before', function(){
+      //purposely blank so that the function returns undefined
+      //this is to test that oform proceeds on either true or undefined
     }).on('load', function(){
 
       w.loadTest = true;

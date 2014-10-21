@@ -202,8 +202,9 @@ for examples.
 
 #### before
 
-Dispatches before oform does anything. If the function return false oform will
-stop executing.
+Dispatches before oform does anything. If the function return false Oform will
+stop executing. If the function returns either `true` or `undefined` Oform will
+continue executing.
 
 ```js
 new Oform({

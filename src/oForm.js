@@ -51,7 +51,13 @@
 
       if(typeof instance.options.before === 'function'){
 
-        before = instance.options.before() ? true : false;
+        before = instance.options.before();
+
+        if(before === undefined){
+
+          before = true;
+
+        }
 
       } else {
 
