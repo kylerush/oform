@@ -359,8 +359,8 @@ Dispatches when Oform has successfully validated the form and/or received a
 response POST. If your form does not have a `method` attribute then Oform will
 not POST the form data.
 
-Generally speaking you should use this method for handling POST request responses
-instead of `.on('load')`.
+Generally speaking you should use this success method for handling POST request
+responses instead of `.on('load')`.
 
 Example with no `method` attribute on form:
 
@@ -392,7 +392,7 @@ Example with a `method` attribute on form:
 new Oform({
   selector: '#mailing-list'
 }).on('success', function(){
-  //The form was successfully validated and a 200 status code as received on the response
+  //The form was successfully validated and/or POST response was received
 });
 ```
 
