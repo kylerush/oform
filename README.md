@@ -247,8 +247,11 @@ new Oform({
   // A JavaScript function object that gets invoked if the operation is canceled by the user.
 }).on('error', function(){
   // A JavaScript function object that gets invoked if the operation fails to complete due to an error.
-}).on('load', function(response){
+}).on('load', function(event, data){
   // A JavaScript function object that gets invoked when the operation is successfully completed.
+  //event = XMLHttpRequestProgressEvent (kept for backwards compatibility)
+  //data.event = XMLHttpRequestProgressEvent
+  //data.data = form inputs and their values
 }).on('loadend', function(){
   // A JavaScript function object that gets invoked when the operation is completed for any reason; it will always follow a an abort, error, or load event.
 }).on('loadstart', function(){
