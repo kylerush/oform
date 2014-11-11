@@ -355,9 +355,12 @@ XMLHttpRequestProgressEvent {
 
 ### success
 
-Dispatches when Oform has successfully validated the form and/or received a 200
-response code on the POST/GET. If your form does not have a `method` attribute
-then Oform will not POST/GET the form data.
+Dispatches when Oform has successfully validated the form and/or received a
+response POST. If your form does not have a `method` attribute then Oform will
+not POST the form data.
+
+Generally speaking you should use this method for handling POST request responses
+instead of `.on('load')`.
 
 Example with no `method` attribute on form:
 

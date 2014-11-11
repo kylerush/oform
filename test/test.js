@@ -29,10 +29,6 @@ $(function(){
 
   });
 
-  //w.window.console.log(firstForm);
-
-  //w.window.console.log(secondForm);
-
   QUnit.test('initializations', function(){
 
     QUnit.expect(1);
@@ -207,9 +203,59 @@ $(function(){
 
   });
 
-  QUnit.asyncTest('option: middleware', function(){
+  QUnit.asyncTest('test no attribute method on form', function(){
 
     QUnit.expect(2);
+
+    w.noSubmissionSubmit = false;
+
+    w.noSubmissionSuccess = false;
+
+    $('#form9 .email').val('form6@test.com');
+
+    $('#form9 .name').val('jane doe');
+
+    $('#form9 .url').val('http://www.google.com');
+
+    $('#form9 .phone').val('6489589837');
+
+    $('#form9 .checkbox').attr('checked', true);
+
+    new Oform({
+
+      selector: '#form9'
+
+    }).on('load', function(){
+
+      w.noSubmissionSubmit = true;
+
+    }).on('success', function(){
+
+      w.noSubmissionSuccess = true;
+
+    }).run({
+
+      target: document.getElementById('form9'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
+
+      QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
+  QUnit.asyncTest('option: middleware', function(){
+
+    QUnit.expect(3);
 
     new Oform({
 
@@ -227,6 +273,10 @@ $(function(){
 
       w.middlewareData = JSON.parse(response.target.responseText);
 
+    }).on('success', function(response){
+
+      w.middlewareDataSuccess = JSON.parse(response.target.responseText);
+
     }).run({
 
       target: document.getElementById('form4'),
@@ -240,6 +290,9 @@ $(function(){
       QUnit.assert.equal(w.middlewareData.headers['x-requested-with'], 'Oform', 'middleware headers worked');
 
       QUnit.assert.equal(w.middlewareData.middleware, 'success', 'middleware data succcess');
+
+      //test that the success method function works as expeected
+      QUnit.assert.equal(w.middlewareDataSuccess.middleware, 'success', 'middleware data succcess');
 
       QUnit.start();
 
@@ -430,50 +483,6 @@ $(function(){
     setTimeout(function(){
 
       QUnit.assert.ok(w.beforeFalseNoErrorsNoSubmit, 'form didn\'t submit');
-
-      QUnit.start();
-
-    }, 500);
-
-  });
-
-  QUnit.asyncTest('test no submission', function(){
-
-    QUnit.expect(1);
-
-    w.noSubmissionSubmit = false;
-
-    w.noSubmissionSuccess = false;
-
-    new Oform({
-
-      selector: '#form9'
-
-    }).on('before', function(){
-
-      return false;
-
-    }).on('load', function(){
-
-      w.noSubmissionSubmit = true;
-
-    }).on('success', function(){
-
-      w.noSubmissionSuccess = true;
-
-    }).run({
-
-      target: document.getElementById('form9'),
-
-      preventDefault: function(){}
-
-    });
-
-    setTimeout(function(){
-
-      QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
-
-      QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
 
       QUnit.start();
 
