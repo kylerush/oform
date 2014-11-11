@@ -353,6 +353,49 @@ XMLHttpRequestProgressEvent {
 }
 ```
 
+### success
+
+Dispatches when Oform has successfully validated the form and/or received a
+response POST. If your form does not have a `method` attribute then Oform will
+not POST the form data.
+
+Generally speaking you should use this success method for handling POST request
+responses instead of `.on('load')`.
+
+Example with no `method` attribute on form:
+
+```html
+<form id="mailing-list" action="/email/list/join" novalidate>
+  <input name="email" type="email" required>
+  <input type="submit" value="Join email list">
+</form>
+```
+
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('success', function(){
+  //The form was successfully validated
+});
+```
+
+Example with a `method` attribute on form:
+
+```html
+<form id="mailing-list" method="post" action="/email/list/join" novalidate>
+  <input name="email" type="email" required>
+  <input type="submit" value="Join email list">
+</form>
+```
+
+```js
+new Oform({
+  selector: '#mailing-list'
+}).on('success', function(){
+  //The form was successfully validated and/or POST response was received
+});
+```
+
 ### done
 
 Dispatches when the Oform instance has finished executing. This function receives

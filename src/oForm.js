@@ -167,28 +167,64 @@
 
         }
 
-        //run submit function
-        var request = new XMLHttpRequest();
+        if(document.querySelector(instance.options.selector).getAttribute('method')){
 
-        if(typeof instance.options.xhr === 'object'){
+          //run submit function
+          var request = new XMLHttpRequest();
 
-          for(var key in instance.options.xhr){
+          if(typeof instance.options.xhr === 'object'){
 
-            request['on' + key] = instance.options.xhr[key];
+            var loadFunction = function(event){
+
+              if(typeof instance.options.xhr.load === 'function'){
+
+                instance.options.xhr.load(event);
+
+              }
+
+              if(typeof instance.options.success === 'function'){
+
+                instance.options.success(event);
+
+              }
+
+            };
+
+            for(var key in instance.options.xhr){
+
+              if(key === 'load'){
+
+                request.onload = loadFunction;
+
+              } else {
+
+                request['on' + key] = instance.options.xhr[key];
+
+              }
+
+            }
+
+            request.open('POST', event.target.getAttribute('action'), true);
+
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+            if(typeof instance.options.middleware === 'function'){
+
+              data = instance.options.middleware(request, data);
+
+            }
+
+            request.send(data);
 
           }
 
-          request.open('POST', event.target.getAttribute('action'), true);
+        } else {
 
-          request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+          if(typeof instance.options.success === 'function'){
 
-          if(typeof instance.options.middleware === 'function'){
-
-            data = instance.options.middleware(request, data);
+            instance.options.success();
 
           }
-
-          request.send(data);
 
         }
 
