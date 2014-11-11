@@ -289,10 +289,10 @@ $(function(){
 
       QUnit.assert.equal(w.middlewareData.headers['x-requested-with'], 'Oform', 'middleware headers worked');
 
-      QUnit.assert.equal(w.middlewareData.middleware, 'success', 'middleware data succcess');
+      QUnit.assert.equal(w.middlewareData.success, true, 'middleware xhr.load data succcess');
 
       //test that the success method function works as expeected
-      QUnit.assert.equal(w.middlewareDataSuccess.middleware, 'success', 'middleware data succcess');
+      QUnit.assert.equal(w.middlewareDataSuccess.success, true, 'middleware success data succcess');
 
       QUnit.start();
 
@@ -343,6 +343,10 @@ $(function(){
 
       w.doneTest = true;
 
+    }).on('success', function(event, data){
+
+      w.successTest = data.data;
+
     }).run({
 
       target: document.getElementById('form6'),
@@ -365,11 +369,13 @@ $(function(){
 
       QUnit.assert.ok(w.loadTest, 'xhr.load worked');
 
-      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked');
+      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (fails in ie9)');
 
-      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked');
+      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (fails in ie9)');
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
+
+      QUnit.assert.equal(w.successTest.email, 'form6@test.com', 'form data argument worked');
 
       QUnit.assert.ok(!$('#form6 .name').hasClass(w.form6.options.errorShowClass), 'remove error class worked');
 
