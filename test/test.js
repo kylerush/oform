@@ -437,4 +437,48 @@ $(function(){
 
   });
 
+  QUnit.asyncTest('test no submission', function(){
+
+    QUnit.expect(1);
+
+    w.noSubmissionSubmit = false;
+
+    w.noSubmissionSuccess = false;
+
+    new Oform({
+
+      selector: '#form9'
+
+    }).on('before', function(){
+
+      return false;
+
+    }).on('load', function(){
+
+      w.noSubmissionSubmit = true;
+
+    }).on('success', function(){
+
+      w.noSubmissionSuccess = true;
+
+    }).run({
+
+      target: document.getElementById('form9'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
+
+      QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
 });
