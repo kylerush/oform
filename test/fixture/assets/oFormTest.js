@@ -43,11 +43,14 @@
       var before,
           invalidFields,
           inputs,
-          data;
+          data,
+          returnData;
 
       invalidFields = 0;
 
       data = [];
+
+      returnData = {};
 
       if(typeof instance.options.before === 'function'){
 
@@ -82,6 +85,8 @@
           name = item.getAttribute('name');
 
           value = item.value;
+
+          returnData[name] = value;
 
           if( item.hasAttribute('required') ){
 
@@ -178,13 +183,19 @@
 
               if(typeof instance.options.xhr.load === 'function'){
 
-                instance.options.xhr.load(event);
+                instance.options.xhr.load(event, {
+                  event: event,
+                  data: returnData
+                });
 
               }
 
               if(typeof instance.options.success === 'function'){
 
-                instance.options.success(event);
+                instance.options.success(event, {
+                  event: event,
+                  data: returnData
+                });
 
               }
 
@@ -214,7 +225,7 @@
 
             }
 
-            request.send(data);
+            request.send(returnData);
 
           }
 
@@ -222,7 +233,10 @@
 
           if(typeof instance.options.success === 'function'){
 
-            instance.options.success();
+            instance.options.success({
+              event: null,
+              data: data
+            });
 
           }
 
