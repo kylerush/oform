@@ -18,7 +18,8 @@
         type === 'load' ||
         type === 'loadend' ||
         type === 'loadstart' ||
-        type === 'progress'
+        type === 'progress' ||
+        type === 'success'
 
       ){
 
