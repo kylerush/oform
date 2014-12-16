@@ -3,11 +3,28 @@
   w.Oform = function(instanceOverrideOptions){
 
     var instance,
+        nodeList2Array,
         mergeObjects,
         instanceDefaultOptions,
-        elements;
+        elements,
+        i;
 
     instance = this;
+
+    //from: http://stackoverflow.com/questions/3010840/loop-through-array-in-javascript
+    nodeList2Array = function (nodes){
+
+      var arr = [];
+
+      for (var i=1; i<nodes.length;(i+=1)){
+
+        arr.push(nodes[i]);
+
+      }
+
+      return arr;
+
+    };
 
     instance.on = function(type, cb){
 
@@ -406,12 +423,11 @@
 
           relatedClasses = Array.prototype.slice.call(relatedClasses);
 
-          relatedClasses.forEach(function(item){
+          for(i = 0; i < relatedClasses.length; i++){
 
-            instance.options.removeClass(item, instance.options.errorShowClass);
+            instance.options.removeClass(relatedClasses[i], instance.options.errorShowClass);
 
-          });
-
+          }
 
         } else {
 
@@ -421,11 +437,11 @@
 
           relatedClasses = Array.prototype.slice.call(relatedClasses);
 
-          relatedClasses.forEach(function(item){
+          for(i = 0; i < relatedClasses.length; i++){
 
-            instance.options.addClass(item, instance.options.errorShowClass);
+            instance.options.addClass(relatedClasses[i], instance.options.errorShowClass);
 
-          });
+          }
 
         }
 
@@ -440,14 +456,22 @@
 
     elements = d.querySelectorAll(instance.options.selector);
 
-    elements = Array.prototype.slice.call(elements);
-    //attach a submit event listener to all the selected forms forms
+    //elements = Array.prototype.slice.call(elements);
+    elements = nodeList2Array(elements);
 
+    //attach a submit event listener to all the selected forms forms
+    for(i = 0; i < elements.length; i++){
+
+      elements[i].addEventListener('submit', instance.run, false);
+
+    }
+    /*
     elements.forEach(function(item){
 
       item.addEventListener('submit', instance.run, false);
 
     });
+    */
 
     instance.remove = function(){
 
@@ -459,11 +483,11 @@
       elements = Array.prototype.slice.call(elements);
 
       //attach a submit event listener to all the selected forms forms
-      elements.forEach(function(item){
+      for(i = 0; i < elements.length; i++){
 
-        item.removeEventListener('submit', instance.run, false);
+        elements[i].removeEventListener('submit', instance.run, false);
 
-      });
+      }
 
       return instance;
 
