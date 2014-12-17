@@ -195,9 +195,8 @@
         }
 
         if(
-          document.querySelector(instance.options.selector).attributes.method &&
+            document.querySelector(instance.options.selector).attributes.method &&
             document.querySelector(instance.options.selector).attributes.method.specified
-
         ){
 
           //run submit function
