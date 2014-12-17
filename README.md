@@ -1,7 +1,7 @@
 oForm [![Build Status](http://img.shields.io/travis/kylerush/oform.svg?style=flat)](https://travis-ci.org/kylerush/oform)
 ==============
 
-> A lightweight handler for forms with no dependencies. Compatible with IE9+.
+> A lightweight handler for forms with no dependencies, not even jQuery. Compatible with IE8+.
 
 ## Install
 
