@@ -227,7 +227,24 @@
 
               if(key === 'load'){
 
-                request.onload = loadFunction;
+                if(typeof request.onload === 'object'){
+
+                  request.onload = loadFunction;
+
+                } else {
+
+                  //ie8
+                  request.onreadystatechange = function(){
+
+                    if(request.readyState === 4){
+
+                      loadFunction();
+
+                    }
+
+                  };
+
+                }
 
               } else {
 
@@ -238,6 +255,10 @@
             }
 
             request.open('POST', event.target.getAttribute('action'), true);
+
+            if(request.timeout){
+              request.timeout = 0;
+            }
 
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
@@ -426,7 +447,7 @@
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = Array.prototype.slice.call(relatedClasses);
+          relatedClasses = nodeList2Array(relatedClasses);
 
           for(i = 0; i < relatedClasses.length; i++){
 
@@ -440,7 +461,7 @@
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = Array.prototype.slice.call(relatedClasses);
+          relatedClasses = nodeList2Array(relatedClasses);
 
           for(i = 0; i < relatedClasses.length; i++){
 
@@ -461,22 +482,23 @@
 
     elements = d.querySelectorAll(instance.options.selector);
 
-    //elements = Array.prototype.slice.call(elements);
     elements = nodeList2Array(elements);
 
     //attach a submit event listener to all the selected forms forms
     for(i = 0; i < elements.length; i++){
 
-      elements[i].addEventListener('submit', instance.run, false);
+      if(elements[i].addEventListener){
+
+        elements[i].addEventListener('submit', instance.run, false);
+
+      } else {
+
+        //ie8
+        elements[i].attachEvent('onsubmit', instance.run);
+
+      }
 
     }
-    /*
-    elements.forEach(function(item){
-
-      item.addEventListener('submit', instance.run, false);
-
-    });
-    */
 
     instance.remove = function(){
 
@@ -485,12 +507,21 @@
 
       elements = d.querySelectorAll(instance.options.selector);
 
-      elements = Array.prototype.slice.call(elements);
+      elements = nodeList2Array(elements);
 
       //attach a submit event listener to all the selected forms forms
       for(i = 0; i < elements.length; i++){
 
-        elements[i].removeEventListener('submit', instance.run, false);
+        if(elements[i].removeEventListener){
+
+          elements[i].removeEventListener('submit', instance.run, false);
+
+        } else {
+
+          //ie8
+          elements[i].detachEvent('submit', instance.run);
+
+        }
 
       }
 

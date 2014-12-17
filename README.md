@@ -265,12 +265,12 @@ new Oform({
 
 |  event    | Chrome  | Firefox | Safari 7+ |  IE10+  |  IE 9   |  IE 8   |
 |-----------|---------|---------|-----------|---------|---------|---------|
-| abort     |    ?    | ?       | ?         | ?       | ?       | ?       |
+| abort     |    ?    |    ?    |     ?     |    ?    |    ?    |    ?    |
 | error     |    ?    |    ?    |     ?     |    ?    |    ?    |    ?    |
-| load      |    √    |    √    |     √     |    √    |    √    |    ?    |
-| loadend   |    √    |    √    |     √     |    √    |    X    |    ?    |
-| loadstart |    √    |    √    |     √     |    √    |    X    |    ?    |
-| progress  |    √    |    √    |     ?     |    ?    |    ?    |    ?    |
+| load      |    √    |    √    |     √     |    √    |    √    |    √    |
+| loadend   |    √    |    √    |     √     |    √    |    X    |    X    |
+| loadstart |    √    |    √    |     √     |    √    |    X    |    X    |
+| progress  |    √    |    √    |     ?     |    ?    |    ?    |    X    |
 
 The `load` event is passed an `XMLHttpRequestProgressEvent`. I can't find any
 documentation on this event to link you to, but in Chrome, here is how a typical
