@@ -383,9 +383,9 @@ $(function(){
 
       QUnit.assert.ok(w.loadTest, 'xhr.load worked');
 
-      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (fails in IE < 10)');
+      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (fails in IE < 10, old FF)');
 
-      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (fails in IE < 10)');
+      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (fails in IE < 10, old FF)');
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 

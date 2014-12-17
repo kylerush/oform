@@ -194,7 +194,11 @@
 
         }
 
-        if(document.querySelector(instance.options.selector).attributes.method.specified){
+        if(
+          document.querySelector(instance.options.selector).attributes.method &&
+            document.querySelector(instance.options.selector).attributes.method.specified
+
+        ){
 
           //run submit function
           var request = new XMLHttpRequest();
