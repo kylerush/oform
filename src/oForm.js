@@ -238,7 +238,13 @@
 
                     if(request.readyState === 4){
 
-                      loadFunction();
+                      //window.alert(request.responseText);
+
+                      loadFunction({
+                        target: {
+                          responseText: request.responseText
+                        }
+                      });
 
                     }
 

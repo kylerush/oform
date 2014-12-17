@@ -219,7 +219,7 @@ $(function(){
 
   // QUnit.asyncTest('test no attribute method on form', function(){
   //
-  //   QUnit.expect(2);
+  //   //QUnit.expect(2);
   //
   //   w.noSubmissionSubmit = false;
   //
@@ -263,58 +263,56 @@ $(function(){
   //
   //     QUnit.start();
   //
-  //   }, 500);
+  //   }, 1000);
   //
   // });
 
-  // QUnit.asyncTest('option: middleware', function(){
-  //
-  //   QUnit.expect(3);
-  //
-  //   new Oform({
-  //
-  //     selector: '#form4',
-  //
-  //     middleware: function(XhrObj){
-  //
-  //       XhrObj.setRequestHeader('x-requested-with', 'Oform');
-  //
-  //       return 'middleware=success';
-  //
-  //     }
-  //
-  //   }).on('load', function(response){
-  //
-  //     window.alert('load running');
-  //
-  //     w.middlewareData = JSON.parse(response.target.responseText);
-  //
-  //   }).on('success', function(response){
-  //
-  //     w.middlewareDataSuccess = JSON.parse(response.target.responseText);
-  //
-  //   }).run({
-  //
-  //     target: document.getElementById('form4'),
-  //
-  //     preventDefault: function(){}
-  //
-  //   });
-  //
-  //   setTimeout(function(){
-  //
-  //     QUnit.assert.equal(w.middlewareData.headers['x-requested-with'], 'Oform', 'middleware headers worked');
-  //
-  //     QUnit.assert.equal(w.middlewareData.success, true, 'middleware xhr.load data succcess');
-  //
-  //     //test that the success method function works as expeected
-  //     QUnit.assert.equal(w.middlewareDataSuccess.success, true, 'middleware success data succcess');
-  //
-  //     QUnit.start();
-  //
-  //   }, 500);
-  //
-  // });
+  QUnit.asyncTest('option: middleware', function(){
+
+    QUnit.expect(3);
+
+    new Oform({
+
+      selector: '#form4',
+
+      middleware: function(XhrObj){
+
+        XhrObj.setRequestHeader('x-requested-with', 'Oform');
+
+        return 'middleware=success';
+
+      }
+
+    }).on('load', function(response){
+
+      w.middlewareData = JSON.parse(response.target.responseText);
+
+    }).on('success', function(response){
+
+      w.middlewareDataSuccess = JSON.parse(response.target.responseText);
+
+    }).run({
+
+      target: document.getElementById('form4'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.equal(w.middlewareData.headers['x-requested-with'], 'Oform', 'middleware headers worked');
+
+      QUnit.assert.equal(w.middlewareData.success, true, 'middleware xhr.load data succcess');
+
+      //test that the success method function works as expeected
+      QUnit.assert.equal(w.middlewareDataSuccess.success, true, 'middleware success data succcess');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
 
   QUnit.asyncTest('testing on handlers', function(){
 
