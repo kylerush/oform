@@ -194,7 +194,7 @@
 
         }
 
-        if(document.querySelector(instance.options.selector).getAttribute('method')){
+        if(document.querySelector(instance.options.selector).attributes.method.specified){
 
           //run submit function
           var request = new XMLHttpRequest();

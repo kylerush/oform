@@ -217,55 +217,55 @@ $(function(){
 
   });
 
-  // QUnit.asyncTest('test no attribute method on form', function(){
-  //
-  //   //QUnit.expect(2);
-  //
-  //   w.noSubmissionSubmit = false;
-  //
-  //   w.noSubmissionSuccess = false;
-  //
-  //   $('#form9 .email').val('form6@test.com');
-  //
-  //   $('#form9 .name').val('jane doe');
-  //
-  //   $('#form9 .url').val('http://www.google.com');
-  //
-  //   $('#form9 .phone').val('6489589837');
-  //
-  //   $('#form9 .checkbox').attr('checked', true);
-  //
-  //   new Oform({
-  //
-  //     selector: '#form9'
-  //
-  //   }).on('load', function(){
-  //
-  //     w.noSubmissionSubmit = true;
-  //
-  //   }).on('success', function(){
-  //
-  //     w.noSubmissionSuccess = true;
-  //
-  //   }).run({
-  //
-  //     target: document.getElementById('form9'),
-  //
-  //     preventDefault: function(){}
-  //
-  //   });
-  //
-  //   setTimeout(function(){
-  //
-  //     QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
-  //
-  //     QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
-  //
-  //     QUnit.start();
-  //
-  //   }, 1000);
-  //
-  // });
+  QUnit.asyncTest('test no attribute method on form', function(){
+
+    //QUnit.expect(2);
+
+    w.noSubmissionSubmit = false;
+
+    w.noSubmissionSuccess = false;
+
+    $('#form9 .email').val('form6@test.com');
+
+    $('#form9 .name').val('jane doe');
+
+    $('#form9 .url').val('http://www.google.com');
+
+    $('#form9 .phone').val('6489589837');
+
+    $('#form9 .checkbox').attr('checked', true);
+
+    new Oform({
+
+      selector: '#form9'
+
+    }).on('load', function(){
+
+      w.noSubmissionSubmit = true;
+
+    }).on('success', function(){
+
+      w.noSubmissionSuccess = true;
+
+    }).run({
+
+      target: document.getElementById('form9'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
+
+      QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
+
+      QUnit.start();
+
+    }, 1000);
+
+  });
 
   QUnit.asyncTest('option: middleware', function(){
 
@@ -389,7 +389,7 @@ $(function(){
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
-      //QUnit.assert.equal(w.successTest.email, 'form6@test.com', 'form data argument worked');
+      QUnit.assert.equal(w.successTest.email, 'form6@test.com', 'form data argument worked');
 
       QUnit.assert.ok(!$('#form6 .name').hasClass(w.form6.options.errorShowClass), 'remove error class worked');
 
