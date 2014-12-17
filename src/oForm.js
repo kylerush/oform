@@ -16,9 +16,9 @@
 
       var arr = [];
 
-      for (var i=1; i<nodes.length;(i+=1)){
+      for(var i = 0, n; n = nodes[i]; ++i){
 
-        arr.push(nodes[i]);
+        arr.push(n);
 
       }
 
@@ -89,13 +89,18 @@
 
         inputs = d.querySelectorAll(instance.options.selector + ' input');
 
-        inputs = Array.prototype.slice.call(inputs);
+        inputs = nodeList2Array(inputs);
 
-        inputs.forEach(function(item){
+        var j;
 
-          var type,
+        for(j = 0; j < inputs.length; j++){
+
+          var item,
+              type,
               name,
               value;
+
+          item = inputs[j];
 
           type = item.getAttribute('type');
 
@@ -175,7 +180,7 @@
 
           }
 
-        });
+        }
 
         data = data.join('&');
 

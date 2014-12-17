@@ -426,9 +426,9 @@ $(function(){
 
       selector: '#form7'
 
-    }).on('validationerror', function(){
+    }).on('validationerror', function(element){
 
-      w.validationErrors.push('error');
+      w.validationErrors.push(element.getAttribute('name'));
 
     }).on('load', function(){
 
