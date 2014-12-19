@@ -3,7 +3,7 @@
   w.Oform = function(instanceOverrideOptions){
 
     var instance,
-        nodeList2Array,
+        arrayify,
         mergeObjects,
         instanceDefaultOptions,
         elements,
@@ -11,18 +11,18 @@
 
     instance = this;
 
-    //from: http://stackoverflow.com/questions/3010840/loop-through-array-in-javascript
-    nodeList2Array = function (nodes){
+    arrayify = function(nodeList) {
 
-      var arr = [];
+      var outputArr = [],
+          i = nodeList.length;
 
-      for(var i = 0, n; n = nodes[i]; ++i){
+      while (i--) {
 
-        arr.push(n);
+        outputArr[i] = nodeList[i];
 
       }
 
-      return arr;
+      return outputArr;
 
     };
 
@@ -89,7 +89,7 @@
 
         inputs = d.querySelectorAll(instance.options.selector + ' input');
 
-        inputs = nodeList2Array(inputs);
+        inputs = arrayify(inputs);
 
         var j;
 
@@ -226,6 +226,22 @@
 
             };
 
+            var ie8Onreadystatchange = function(){
+
+              if(request.readyState === 4){
+
+                //window.alert(request.responseText);
+
+                loadFunction({
+                  target: {
+                    responseText: request.responseText
+                  }
+                });
+
+              }
+
+            };
+
             for(var key in instance.options.xhr){
 
               if(key === 'load'){
@@ -237,21 +253,7 @@
                 } else {
 
                   //ie8
-                  request.onreadystatechange = function(){
-
-                    if(request.readyState === 4){
-
-                      //window.alert(request.responseText);
-
-                      loadFunction({
-                        target: {
-                          responseText: request.responseText
-                        }
-                      });
-
-                    }
-
-                  };
+                  request.onreadystatechange = ie8Onreadystatchange;
 
                 }
 
@@ -456,7 +458,7 @@
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = nodeList2Array(relatedClasses);
+          relatedClasses = arrayify(relatedClasses);
 
           for(i = 0; i < relatedClasses.length; i++){
 
@@ -470,7 +472,7 @@
 
           relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = nodeList2Array(relatedClasses);
+          relatedClasses = arrayify(relatedClasses);
 
           for(i = 0; i < relatedClasses.length; i++){
 
@@ -491,7 +493,7 @@
 
     elements = d.querySelectorAll(instance.options.selector);
 
-    elements = nodeList2Array(elements);
+    elements = arrayify(elements);
 
     //attach a submit event listener to all the selected forms forms
     for(i = 0; i < elements.length; i++){
@@ -516,7 +518,7 @@
 
       elements = d.querySelectorAll(instance.options.selector);
 
-      elements = nodeList2Array(elements);
+      elements = arrayify(elements);
 
       //attach a submit event listener to all the selected forms forms
       for(i = 0; i < elements.length; i++){

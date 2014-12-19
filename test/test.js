@@ -5,17 +5,18 @@ $(function(){
 
   w.beforeTest = false;
 
-  var nodeList2Array = function (nodes){
+  var arrayify = function(nodeList) {
 
-    var arr = [];
+    var outputArr = [],
+    i = nodeList.length;
 
-    for(var i = 0, n; n = nodes[i]; ++i){
+    while (i--) {
 
-      arr.push(n);
+      outputArr[i] = nodeList[i];
 
     }
 
-    return arr;
+    return outputArr;
 
   };
 
@@ -341,7 +342,7 @@ $(function(){
     }).on('before', function(){
       //purposely blank so that the function returns undefined
       //this is to test that oform proceeds on either true or undefined
-    }).on('load', function(var1, var2){
+    }).on('load', function(){
 
       w.loadTest = true;
 
@@ -373,7 +374,7 @@ $(function(){
 
       var fields = document.querySelectorAll('#form6 input[required]');
 
-      fields = nodeList2Array(fields);
+      fields = arrayify(fields);
 
       for(var i = 0; i < fields.length; i++){
 
@@ -383,9 +384,9 @@ $(function(){
 
       QUnit.assert.ok(w.loadTest, 'xhr.load worked');
 
-      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (fails in IE < 10, old FF)');
+      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (Fails in IE < 10 & old Firefox)');
 
-      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (fails in IE < 10, old FF)');
+      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (Fails in IE < 10)');
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
