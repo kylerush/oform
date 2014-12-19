@@ -55,7 +55,18 @@
 
     instance.run = function(event){
 
-      event.preventDefault();
+      //event.preventDefault();
+
+      //funky preventDefault for ie8
+      if(event.preventDefault){
+
+        event.preventDefault();
+
+      } else {
+
+        event.returnValue = false;
+
+      }
 
       var before,
           invalidFields,
