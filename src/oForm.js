@@ -3,18 +3,18 @@
   w.Oform = function(instanceOverrideOptions){
 
     var instance,
-        arrayify,
-        mergeObjects,
-        instanceDefaultOptions,
-        elements,
-        i;
+    arrayify,
+    mergeObjects,
+    instanceDefaultOptions,
+    elements,
+    i;
 
     instance = this;
 
     arrayify = function(nodeList) {
 
       var outputArr = [],
-          i = nodeList.length;
+      i = nodeList.length;
 
       while (i--) {
 
@@ -69,10 +69,10 @@
       }
 
       var before,
-          invalidFields,
-          inputs,
-          data,
-          returnData;
+      invalidFields,
+      inputs,
+      data,
+      returnData;
 
       invalidFields = 0;
 
@@ -107,9 +107,9 @@
         for(j = 0; j < inputs.length; j++){
 
           var item,
-              type,
-              name,
-              value;
+          type,
+          name,
+          value;
 
           item = inputs[j];
 
@@ -206,8 +206,8 @@
         }
 
         if(
-            document.querySelector(instance.options.selector).attributes.method &&
-            document.querySelector(instance.options.selector).attributes.method.specified
+          document.querySelector(instance.options.selector).attributes.method &&
+          document.querySelector(instance.options.selector).attributes.method.specified
         ){
 
           //run submit function
@@ -276,7 +276,17 @@
 
             }
 
-            request.open('POST', event.target.getAttribute('action'), true);
+            if(typeof event.target === 'object'){
+
+              request.open('POST', event.target.getAttribute('action'), true);
+
+            } else {
+
+              //ie8
+
+              request.open('POST', event.srcElement.getAttribute('action'), true);
+
+            }
 
             if(request.timeout){
               request.timeout = 0;
@@ -330,24 +340,30 @@
     mergeObjects = function (obj1,obj2){
 
       var obj3,
-          attrname;
+      attrname;
 
       obj3 = {};
 
       for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
 
-      for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
 
-      return obj3;
-    };
+          return obj3;
+        };
 
-    var validateString = function(element){
+        var validateString = function(element){
 
-      if(typeof element.value === 'string'){
+          if(typeof element.value === 'string'){
 
-          if(element.value){
+            if(element.value){
 
-            return true;
+              return true;
+
+            } else {
+
+              return false;
+
+            }
 
           } else {
 
@@ -355,204 +371,199 @@
 
           }
 
-      } else {
+        };
 
-        return false;
+        //default options
+        instanceDefaultOptions = {
 
-      }
+          selector: 'form',
 
-    };
+          errorShowClass: 'oform-error-show',
 
-    //default options
-    instanceDefaultOptions = {
+          bodyErrorClass: 'oform-error',
 
-      selector: 'form',
+          validate: {
 
-      errorShowClass: 'oform-error-show',
+            email: function(email){
 
-      bodyErrorClass: 'oform-error',
+              var value;
 
-      validate: {
+              if(typeof email === 'string'){
 
-        email: function(email){
+                value = email;
 
-          var value;
+              } else {
 
-          if(typeof email === 'string'){
+                value = email.value;
 
-            value = email;
+              }
 
-          } else {
+              var emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-            value = email.value;
+              return emailRegEx.test(value);
 
-          }
+            },
 
-          var emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            tel: function(phone){
 
-          return emailRegEx.test(value);
+              var value;
 
-        },
+              if(typeof phone === 'string'){
 
-        tel: function(phone){
+                value = phone;
 
-          var value;
+              } else {
 
-          if(typeof phone === 'string'){
+                value = phone.value;
 
-            value = phone;
+              }
 
-          } else {
+              var phoneOnlyDigits = value.replace(/\D/g, '');
 
-            value = phone.value;
+              return phoneOnlyDigits.length >= 10 ? true : false;
 
-          }
+            },
 
-          var phoneOnlyDigits = value.replace(/\D/g, '');
+            checkbox: function(checkbox){
 
-          return phoneOnlyDigits.length >= 10 ? true : false;
+              return checkbox.checked ? true : false;
 
-        },
+            },
 
-        checkbox: function(checkbox){
+            text: validateString,
 
-          return checkbox.checked ? true : false;
+            url: validateString,
 
-        },
+            password: validateString
 
-        text: validateString,
+          },
 
-        url: validateString,
+          hasClass: function(ele,cls) {
 
-        password: validateString
+            return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
 
-      },
+          },
 
-      hasClass: function(ele,cls) {
+          addClass: function(ele,cls) {
 
-        return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+            if ( !instance.options.hasClass(ele,cls) ) {
 
-      },
+              ele.className += ' ' + cls;
 
-      addClass: function(ele,cls) {
+            }
 
-        if ( !instance.options.hasClass(ele,cls) ) {
+          },
 
-          ele.className += ' ' + cls;
+          removeClass: function(ele,cls) {
 
-        }
+            if (instance.options.hasClass(ele,cls)) {
 
-      },
+              var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
 
-      removeClass: function(ele,cls) {
+              ele.className=ele.className.replace(reg,' ');
 
-        if (instance.options.hasClass(ele,cls)) {
+            }
 
-          var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+          },
 
-          ele.className=ele.className.replace(reg,' ');
+          adjustClasses: function(element, isValid){
 
-        }
-
-      },
-
-      adjustClasses: function(element, isValid){
-
-        var relatedClass,
+            var relatedClass,
             relatedClasses;
 
-        relatedClass = '.' + element.getAttribute('name') + '-related';
+            relatedClass = '.' + element.getAttribute('name') + '-related';
 
-        if(isValid){
+            if(isValid){
 
-          instance.options.removeClass(element, instance.options.errorShowClass);
+              instance.options.removeClass(element, instance.options.errorShowClass);
 
-          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+              relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = arrayify(relatedClasses);
+              relatedClasses = arrayify(relatedClasses);
 
-          for(i = 0; i < relatedClasses.length; i++){
+              for(i = 0; i < relatedClasses.length; i++){
 
-            instance.options.removeClass(relatedClasses[i], instance.options.errorShowClass);
+                instance.options.removeClass(relatedClasses[i], instance.options.errorShowClass);
+
+              }
+
+            } else {
+
+              instance.options.addClass(element, instance.options.errorShowClass);
+
+              relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+
+              relatedClasses = arrayify(relatedClasses);
+
+              for(i = 0; i < relatedClasses.length; i++){
+
+                instance.options.addClass(relatedClasses[i], instance.options.errorShowClass);
+
+              }
+
+            }
+
+            return isValid;
 
           }
 
-        } else {
+        };
 
-          instance.options.addClass(element, instance.options.errorShowClass);
+        //use instance overrides
+        instance.options = mergeObjects(instanceDefaultOptions, instanceOverrideOptions);
 
-          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+        elements = d.querySelectorAll(instance.options.selector);
 
-          relatedClasses = arrayify(relatedClasses);
+        elements = arrayify(elements);
 
-          for(i = 0; i < relatedClasses.length; i++){
+        //attach a submit event listener to all the selected forms forms
+        for(i = 0; i < elements.length; i++){
 
-            instance.options.addClass(relatedClasses[i], instance.options.errorShowClass);
+          if(elements[i].addEventListener){
+
+            elements[i].addEventListener('submit', instance.run, false);
+
+          } else {
+
+            //ie8
+            elements[i].attachEvent('onsubmit', instance.run);
 
           }
 
         }
 
-        return isValid;
+        instance.remove = function(){
 
-      }
+          //get the selected forms in the dom
+          var elements;
 
-    };
+          elements = d.querySelectorAll(instance.options.selector);
 
-    //use instance overrides
-    instance.options = mergeObjects(instanceDefaultOptions, instanceOverrideOptions);
+          elements = arrayify(elements);
 
-    elements = d.querySelectorAll(instance.options.selector);
+          //attach a submit event listener to all the selected forms forms
+          for(i = 0; i < elements.length; i++){
 
-    elements = arrayify(elements);
+            if(elements[i].removeEventListener){
 
-    //attach a submit event listener to all the selected forms forms
-    for(i = 0; i < elements.length; i++){
+              elements[i].removeEventListener('submit', instance.run, false);
 
-      if(elements[i].addEventListener){
+            } else {
 
-        elements[i].addEventListener('submit', instance.run, false);
+              //ie8
+              elements[i].detachEvent('submit', instance.run);
 
-      } else {
+            }
 
-        //ie8
-        elements[i].attachEvent('onsubmit', instance.run);
+          }
 
-      }
+          return instance;
 
-    }
+        };
 
-    instance.remove = function(){
+        return instance;
 
-      //get the selected forms in the dom
-      var elements;
+      };
 
-      elements = d.querySelectorAll(instance.options.selector);
-
-      elements = arrayify(elements);
-
-      //attach a submit event listener to all the selected forms forms
-      for(i = 0; i < elements.length; i++){
-
-        if(elements[i].removeEventListener){
-
-          elements[i].removeEventListener('submit', instance.run, false);
-
-        } else {
-
-          //ie8
-          elements[i].detachEvent('submit', instance.run);
-
-        }
-
-      }
-
-      return instance;
-
-    };
-
-    return instance;
-
-  };
-
-})(window,document);
+    })(window,document);
+    
