@@ -247,11 +247,12 @@ new Oform({
   // A JavaScript function object that gets invoked if the operation is canceled by the user.
 }).on('error', function(){
   // A JavaScript function object that gets invoked if the operation fails to complete due to an error.
-}).on('load', function(event, data){
+}).on('load', function(returnData){
   // A JavaScript function object that gets invoked when the operation is successfully completed.
-  //event = XMLHttpRequestProgressEvent (kept for backwards compatibility)
-  //data.event = XMLHttpRequestProgressEvent
-  //data.data = form inputs and their values
+  //returnData.requestPayload = The values from the form
+  //data.XHR = The XMLHttpRequest object
+  //data.XHR.status = HTTP status code from the response
+  //data.XHR.responseText = Response body as a string (use JSON.parse to turn it into an object)
 }).on('loadend', function(){
   // A JavaScript function object that gets invoked when the operation is completed for any reason; it will always follow a an abort, error, or load event.
 }).on('loadstart', function(){
@@ -272,88 +273,28 @@ new Oform({
 | loadstart |    √    |    √    |     √     |    √    |    X    |    X    |
 | progress  |    √    |    √    |     ?     |    ?    |    ?    |    X    |
 
-The `load` event is passed an `XMLHttpRequestProgressEvent`. I can't find any
-documentation on this event to link you to, but in Chrome, here is how a typical
-successful response looks:
+The `load` event is passed the `XMLHttpRequestObject`. Below is how a typical
+object looks. Note that this object will look different in IE8 as IE8 doesn't
+support many of the event handlers like onreadystatechange. In most cases you
+will just need to work with the responseText and status properties of this object.
 
 ```js
-XMLHttpRequestProgressEvent {
-  bubbles: false,
-  cancelBubble: false,
-  cancelable: true,
-  clipboardData: undefined,
-  currentTarget: {
-    onabort: null,
-    onerror: null,
-    onload: function(){}
-    onloadstart: null,
-    onpregress: null,
-    onreadystatechange: null,
-    ontimeout: null,
-    readyState: 4,
-    response: "", //if you specify a data type then this will be formatted as that and not a string
-    responeText: "", //the response body as a string, you will need to JSON.parse
-    responseType: "",
-    responseURL: "http://0.0.0.0:8080/success",
-    responseXML: null,
-    status: 200,
-    statusText: "OK",
-    timeout: 0,
-    upload: {},
-    withCredentials: false
-  },
-  defaultPrevented: false,
-  eventPhase: 0,
-  lengthComputable: false,
-  loaded: 844,
-  path: NodeList[0],
-  position: 844,
-  returnValue: true,
-  srcElement: {
-    onabort: null,
-    onerror: null,
-    onload: function(){}
-    onloadstart: null,
-    onpregress: null,
-    onreadystatechange: null,
-    ontimeout: null,
-    readyState: 4,
-    response: "", //if you specify a data type then this will be formatted as that and not a string
-    responeText: "", //the response body as a string, you will need to JSON.parse
-    responseType: "",
-    responseURL: "http://0.0.0.0:8080/success",
-    responseXML: null,
-    status: 200,
-    statusText: "OK",
-    timeout: 0,
-    upload: {},
-    withCredentials: false
-  },
-  target: {
-    onabort: null,
-    onerror: null,
-    onload: function(){}
-    onloadstart: null,
-    onpregress: null,
-    onreadystatechange: null,
-    ontimeout: null,
-    readyState: 4,
-    response: "",
-    response: "", //if you specify a data type then this will be formatted as that and not a string
-    responeText: "", //the response body as a string, you will need to JSON.parse
-    responseURL: "http://0.0.0.0:8080/success",
-    responseXML: null,
-    status: 200,
-    statusText: "OK",
-    timeout: 0,
-    upload: {},
-    withCredentials: false
-  },
-  timeStamp: 1410547973794,
-  total: 0,
-  totalSize: 0,
-  type: 'load'
-}
+onabort: null
+onerror: function
+onload: function
+onloadend: null
+onloadstart: null
+onprogress: null
+onreadystatechange: null
+ontimeout: null
+readyState: 4
+response: "{"token":"c68714fcfb2a2f90c62add44ea3d120258e134f4","succeeded":true}↵"
+responseText: "{"token":"c68714fcfb2a2f90c62add44ea3d120258e134f4","succeeded":true}↵"
+responseType: ""responseURL: "http://0.0.0.0:9000/account/free_trial_create"
+responseXML: null
+status: 200
+statusText: "OK"timeout: 0
+upload: XMLHttpRequestUploadwithCredentials: false__proto__: XMLHttpRequest
 ```
 
 ### success

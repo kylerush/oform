@@ -215,22 +215,22 @@
 
           if(typeof instance.options.xhr === 'object'){
 
-            var loadFunction = function(event){
+            var loadFunction = function(){
 
               if(typeof instance.options.xhr.load === 'function'){
 
-                instance.options.xhr.load(event, {
-                  event: event,
-                  data: returnData
+                instance.options.xhr.load({
+                  requestPayload: returnData,
+                  XHR: request
                 });
 
               }
 
               if(typeof instance.options.success === 'function'){
 
-                instance.options.success(event, {
-                  event: event,
-                  data: returnData
+                instance.options.success({
+                  requestPayload: returnData,
+                  XHR: request
                 });
 
               }
@@ -244,9 +244,8 @@
                 //window.alert(request.responseText);
 
                 loadFunction({
-                  target: {
-                    responseText: request.responseText
-                  }
+                  requestPayload: returnData,
+                  XHR: request
                 });
 
               }
@@ -566,4 +565,3 @@
       };
 
     })(window,document);
-    

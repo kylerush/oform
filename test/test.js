@@ -284,13 +284,13 @@ $(function(){
 
       }
 
-    }).on('load', function(response){
+    }).on('load', function(returnData){
 
-      w.middlewareData = JSON.parse(response.target.responseText);
+      w.middlewareData = JSON.parse(returnData.XHR.responseText);
 
-    }).on('success', function(response){
+    }).on('success', function(returnData){
 
-      w.middlewareDataSuccess = JSON.parse(response.target.responseText);
+      w.middlewareDataSuccess = JSON.parse(returnData.XHR.responseText);
 
     }).run({
 
@@ -358,9 +358,9 @@ $(function(){
 
       w.doneTest = true;
 
-    }).on('success', function(event, data){
+    }).on('success', function(returnData){
 
-      w.successTest = data.data;
+      w.successTest = returnData.requestPayload;
 
     }).run({
 
