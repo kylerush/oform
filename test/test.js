@@ -5,6 +5,21 @@ $(function(){
 
   w.beforeTest = false;
 
+  var arrayify = function(nodeList) {
+
+    var outputArr = [],
+    i = nodeList.length;
+
+    while (i--) {
+
+      outputArr[i] = nodeList[i];
+
+    }
+
+    return outputArr;
+
+  };
+
   var firstForm = new Oform({
 
     selector: '#form1',
@@ -205,7 +220,7 @@ $(function(){
 
   QUnit.asyncTest('test no attribute method on form', function(){
 
-    QUnit.expect(2);
+    //QUnit.expect(2);
 
     w.noSubmissionSubmit = false;
 
@@ -249,7 +264,7 @@ $(function(){
 
       QUnit.start();
 
-    }, 500);
+    }, 1000);
 
   });
 
@@ -269,13 +284,13 @@ $(function(){
 
       }
 
-    }).on('load', function(response){
+    }).on('load', function(returnData){
 
-      w.middlewareData = JSON.parse(response.target.responseText);
+      w.middlewareData = JSON.parse(returnData.XHR.responseText);
 
-    }).on('success', function(response){
+    }).on('success', function(returnData){
 
-      w.middlewareDataSuccess = JSON.parse(response.target.responseText);
+      w.middlewareDataSuccess = JSON.parse(returnData.XHR.responseText);
 
     }).run({
 
@@ -343,9 +358,9 @@ $(function(){
 
       w.doneTest = true;
 
-    }).on('success', function(event, data){
+    }).on('success', function(returnData){
 
-      w.successTest = data.data;
+      w.successTest = returnData.requestPayload;
 
     }).run({
 
@@ -359,19 +374,19 @@ $(function(){
 
       var fields = document.querySelectorAll('#form6 input[required]');
 
-      fields = Array.prototype.slice.call(fields);
+      fields = arrayify(fields);
 
-      fields.forEach(function(input){
+      for(var i = 0; i < fields.length; i++){
 
-        QUnit.assert.equal(input.getAttribute('required'), '', input.getAttribute('name') + ' onvalidationerror worked correctly');
+        QUnit.assert.equal(fields[i].getAttribute('required'), '', fields[i].getAttribute('name') + ' onvalidationerror worked correctly');
 
-      });
+      }
 
       QUnit.assert.ok(w.loadTest, 'xhr.load worked');
 
-      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (fails in ie9)');
+      QUnit.assert.ok(w.loadendTest, 'xhr.loadend worked (Fails in IE < 10 & old Firefox)');
 
-      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (fails in ie9)');
+      QUnit.assert.ok(w.loadStartTest, 'xhr.loadstart worked  (Fails in IE < 10)');
 
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
@@ -426,9 +441,9 @@ $(function(){
 
       selector: '#form7'
 
-    }).on('validationerror', function(){
+    }).on('validationerror', function(element){
 
-      w.validationErrors.push('error');
+      w.validationErrors.push(element.getAttribute('name'));
 
     }).on('load', function(){
 

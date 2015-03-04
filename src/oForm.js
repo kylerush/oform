@@ -3,11 +3,28 @@
   w.Oform = function(instanceOverrideOptions){
 
     var instance,
-        mergeObjects,
-        instanceDefaultOptions,
-        elements;
+    arrayify,
+    mergeObjects,
+    instanceDefaultOptions,
+    elements,
+    i;
 
     instance = this;
+
+    arrayify = function(nodeList) {
+
+      var outputArr = [],
+      i = nodeList.length;
+
+      while (i--) {
+
+        outputArr[i] = nodeList[i];
+
+      }
+
+      return outputArr;
+
+    };
 
     instance.on = function(type, cb){
 
@@ -38,13 +55,24 @@
 
     instance.run = function(event){
 
-      event.preventDefault();
+      //event.preventDefault();
+
+      //funky preventDefault for ie8
+      if(event.preventDefault){
+
+        event.preventDefault();
+
+      } else {
+
+        event.returnValue = false;
+
+      }
 
       var before,
-          invalidFields,
-          inputs,
-          data,
-          returnData;
+      invalidFields,
+      inputs,
+      data,
+      returnData;
 
       invalidFields = 0;
 
@@ -72,13 +100,18 @@
 
         inputs = d.querySelectorAll(instance.options.selector + ' input');
 
-        inputs = Array.prototype.slice.call(inputs);
+        inputs = arrayify(inputs);
 
-        inputs.forEach(function(item){
+        var j;
 
-          var type,
-              name,
-              value;
+        for(j = 0; j < inputs.length; j++){
+
+          var item,
+          type,
+          name,
+          value;
+
+          item = inputs[j];
 
           type = item.getAttribute('type');
 
@@ -158,7 +191,7 @@
 
           }
 
-        });
+        }
 
         data = data.join('&');
 
@@ -172,29 +205,47 @@
 
         }
 
-        if(document.querySelector(instance.options.selector).getAttribute('method')){
+        if(
+          document.querySelector(instance.options.selector).attributes.method &&
+          document.querySelector(instance.options.selector).attributes.method.specified
+        ){
 
           //run submit function
           var request = new XMLHttpRequest();
 
           if(typeof instance.options.xhr === 'object'){
 
-            var loadFunction = function(event){
+            var loadFunction = function(){
 
               if(typeof instance.options.xhr.load === 'function'){
 
-                instance.options.xhr.load(event, {
-                  event: event,
-                  data: returnData
+                instance.options.xhr.load({
+                  requestPayload: returnData,
+                  XHR: request
                 });
 
               }
 
               if(typeof instance.options.success === 'function'){
 
-                instance.options.success(event, {
-                  event: event,
-                  data: returnData
+                instance.options.success({
+                  requestPayload: returnData,
+                  XHR: request
+                });
+
+              }
+
+            };
+
+            var ie8Onreadystatchange = function(){
+
+              if(request.readyState === 4){
+
+                //window.alert(request.responseText);
+
+                loadFunction({
+                  requestPayload: returnData,
+                  XHR: request
                 });
 
               }
@@ -205,7 +256,16 @@
 
               if(key === 'load'){
 
-                request.onload = loadFunction;
+                if(typeof request.onload === 'object'){
+
+                  request.onload = loadFunction;
+
+                } else {
+
+                  //ie8
+                  request.onreadystatechange = ie8Onreadystatchange;
+
+                }
 
               } else {
 
@@ -215,7 +275,21 @@
 
             }
 
-            request.open('POST', event.target.getAttribute('action'), true);
+            if(typeof event.target === 'object'){
+
+              request.open('POST', event.target.getAttribute('action'), true);
+
+            } else {
+
+              //ie8
+
+              request.open('POST', event.srcElement.getAttribute('action'), true);
+
+            }
+
+            if(request.timeout){
+              request.timeout = 0;
+            }
 
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
@@ -265,24 +339,30 @@
     mergeObjects = function (obj1,obj2){
 
       var obj3,
-          attrname;
+      attrname;
 
       obj3 = {};
 
       for (attrname in obj1) { obj3[attrname] = obj1[attrname]; }
 
-      for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        for (attrname in obj2) { obj3[attrname] = obj2[attrname]; }
 
-      return obj3;
-    };
+          return obj3;
+        };
 
-    var validateString = function(element){
+        var validateString = function(element){
 
-      if(typeof element.value === 'string'){
+          if(typeof element.value === 'string'){
 
-          if(element.value){
+            if(element.value){
 
-            return true;
+              return true;
+
+            } else {
+
+              return false;
+
+            }
 
           } else {
 
@@ -290,187 +370,198 @@
 
           }
 
-      } else {
+        };
 
-        return false;
+        //default options
+        instanceDefaultOptions = {
 
-      }
+          selector: 'form',
 
-    };
+          errorShowClass: 'oform-error-show',
 
-    //default options
-    instanceDefaultOptions = {
+          bodyErrorClass: 'oform-error',
 
-      selector: 'form',
+          validate: {
 
-      errorShowClass: 'oform-error-show',
+            email: function(email){
 
-      bodyErrorClass: 'oform-error',
+              var value;
 
-      validate: {
+              if(typeof email === 'string'){
 
-        email: function(email){
+                value = email;
 
-          var value;
+              } else {
 
-          if(typeof email === 'string'){
+                value = email.value;
 
-            value = email;
+              }
 
-          } else {
+              var emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-            value = email.value;
+              return emailRegEx.test(value);
 
-          }
+            },
 
-          var emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            tel: function(phone){
 
-          return emailRegEx.test(value);
+              var value;
 
-        },
+              if(typeof phone === 'string'){
 
-        tel: function(phone){
+                value = phone;
 
-          var value;
+              } else {
 
-          if(typeof phone === 'string'){
+                value = phone.value;
 
-            value = phone;
+              }
 
-          } else {
+              var phoneOnlyDigits = value.replace(/\D/g, '');
 
-            value = phone.value;
+              return phoneOnlyDigits.length >= 10 ? true : false;
 
-          }
+            },
 
-          var phoneOnlyDigits = value.replace(/\D/g, '');
+            checkbox: function(checkbox){
 
-          return phoneOnlyDigits.length >= 10 ? true : false;
+              return checkbox.checked ? true : false;
 
-        },
+            },
 
-        checkbox: function(checkbox){
+            text: validateString,
 
-          return checkbox.checked ? true : false;
+            url: validateString,
 
-        },
+            password: validateString
 
-        text: validateString,
+          },
 
-        url: validateString,
+          hasClass: function(ele,cls) {
 
-        password: validateString
+            return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
 
-      },
+          },
 
-      hasClass: function(ele,cls) {
+          addClass: function(ele,cls) {
 
-        return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+            if ( !instance.options.hasClass(ele,cls) ) {
 
-      },
+              ele.className += ' ' + cls;
 
-      addClass: function(ele,cls) {
+            }
 
-        if ( !instance.options.hasClass(ele,cls) ) {
+          },
 
-          ele.className += ' ' + cls;
+          removeClass: function(ele,cls) {
 
-        }
+            if (instance.options.hasClass(ele,cls)) {
 
-      },
+              var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
 
-      removeClass: function(ele,cls) {
+              ele.className=ele.className.replace(reg,' ');
 
-        if (instance.options.hasClass(ele,cls)) {
+            }
 
-          var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+          },
 
-          ele.className=ele.className.replace(reg,' ');
+          adjustClasses: function(element, isValid){
 
-        }
-
-      },
-
-      adjustClasses: function(element, isValid){
-
-        var relatedClass,
+            var relatedClass,
             relatedClasses;
 
-        relatedClass = '.' + element.getAttribute('name') + '-related';
+            relatedClass = '.' + element.getAttribute('name') + '-related';
 
-        if(isValid){
+            if(isValid){
 
-          instance.options.removeClass(element, instance.options.errorShowClass);
+              instance.options.removeClass(element, instance.options.errorShowClass);
 
-          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+              relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = Array.prototype.slice.call(relatedClasses);
+              relatedClasses = arrayify(relatedClasses);
 
-          relatedClasses.forEach(function(item){
+              for(i = 0; i < relatedClasses.length; i++){
 
-            instance.options.removeClass(item, instance.options.errorShowClass);
+                instance.options.removeClass(relatedClasses[i], instance.options.errorShowClass);
 
-          });
+              }
 
+            } else {
 
-        } else {
+              instance.options.addClass(element, instance.options.errorShowClass);
 
-          instance.options.addClass(element, instance.options.errorShowClass);
+              relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
 
-          relatedClasses = document.querySelectorAll(instance.options.selector + ' ' + relatedClass);
+              relatedClasses = arrayify(relatedClasses);
 
-          relatedClasses = Array.prototype.slice.call(relatedClasses);
+              for(i = 0; i < relatedClasses.length; i++){
 
-          relatedClasses.forEach(function(item){
+                instance.options.addClass(relatedClasses[i], instance.options.errorShowClass);
 
-            instance.options.addClass(item, instance.options.errorShowClass);
+              }
 
-          });
+            }
+
+            return isValid;
+
+          }
+
+        };
+
+        //use instance overrides
+        instance.options = mergeObjects(instanceDefaultOptions, instanceOverrideOptions);
+
+        elements = d.querySelectorAll(instance.options.selector);
+
+        elements = arrayify(elements);
+
+        //attach a submit event listener to all the selected forms forms
+        for(i = 0; i < elements.length; i++){
+
+          if(elements[i].addEventListener){
+
+            elements[i].addEventListener('submit', instance.run, false);
+
+          } else {
+
+            //ie8
+            elements[i].attachEvent('onsubmit', instance.run);
+
+          }
 
         }
 
-        return isValid;
+        instance.remove = function(){
 
-      }
+          //get the selected forms in the dom
+          var elements;
 
-    };
+          elements = d.querySelectorAll(instance.options.selector);
 
-    //use instance overrides
-    instance.options = mergeObjects(instanceDefaultOptions, instanceOverrideOptions);
+          elements = arrayify(elements);
 
-    elements = d.querySelectorAll(instance.options.selector);
+          //attach a submit event listener to all the selected forms forms
+          for(i = 0; i < elements.length; i++){
 
-    elements = Array.prototype.slice.call(elements);
-    //attach a submit event listener to all the selected forms forms
+            if(elements[i].removeEventListener){
 
-    elements.forEach(function(item){
+              elements[i].removeEventListener('submit', instance.run, false);
 
-      item.addEventListener('submit', instance.run, false);
+            } else {
 
-    });
+              //ie8
+              elements[i].detachEvent('submit', instance.run);
 
-    instance.remove = function(){
+            }
 
-      //get the selected forms in the dom
-      var elements;
+          }
 
-      elements = d.querySelectorAll(instance.options.selector);
+          return instance;
 
-      elements = Array.prototype.slice.call(elements);
+        };
 
-      //attach a submit event listener to all the selected forms forms
-      elements.forEach(function(item){
+        return instance;
 
-        item.removeEventListener('submit', instance.run, false);
+      };
 
-      });
-
-      return instance;
-
-    };
-
-    return instance;
-
-  };
-
-})(window,document);
+    })(window,document);
