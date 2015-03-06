@@ -119,8 +119,6 @@
 
           value = item.value;
 
-          returnData[name] = value;
-
           if( item.hasAttribute('required') ){
 
             if(
@@ -181,11 +179,15 @@
 
                 data.push( name + '=' + encodeURIComponent(value) );
 
+                returnData[name] = value;
+
               }
 
             } else {
 
               data.push( name + '=' + encodeURIComponent(value) );
+
+              returnData[name] = value;
 
             }
 
