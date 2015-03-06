@@ -325,7 +325,7 @@ $(function(){
 
     $('#form6 .phone').val('6489589837');
 
-    $('#form6 .checkbox').attr('checked', true);
+    $('#form6 [name="compliance"]').attr('checked', true);
 
     w.loadTest = false;
 
