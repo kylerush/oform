@@ -325,7 +325,7 @@ $(function(){
 
     $('#form6 .phone').val('6489589837');
 
-    $('#form6 .checkbox').attr('checked', true);
+    $('#form6 [name="compliance"]').attr('checked', true);
 
     w.loadTest = false;
 
@@ -391,6 +391,8 @@ $(function(){
       QUnit.assert.ok(w.doneTest, 'on.done worked');
 
       QUnit.assert.equal(w.successTest.email, 'form6@test.com', 'form data argument worked');
+
+      QUnit.assert.equal(typeof(w.successTest.human), 'undefined', 'unchecked checkboxes not in requestPayload');
 
       QUnit.assert.ok(!$('#form6 .name').hasClass(w.form6.options.errorShowClass), 'remove error class worked');
 
