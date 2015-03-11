@@ -520,9 +520,19 @@ $(function(){
 
     QUnit.expect(2);
 
-    w.invalidRadio = false;
+    w.invalidRadio = 0;
 
     w.invalidRadioError = false;
+
+    $('#form10 .email').val('form6@test.com');
+
+    $('#form10 .name').val('jane doe');
+
+    $('#form10 .url').val('http://www.google.com');
+
+    $('#form10 .phone').val('6489589837');
+
+    $('#form10 [name="compliance"]').attr('checked', true);
 
     new Oform({
 
@@ -530,7 +540,9 @@ $(function(){
 
     }).on('load', function(){
 
-      w.invalidRadio = true;
+      w.invalidRadio++;
+
+      w.alert('hey');
 
     }).on('validationerror', function(){
 
@@ -546,9 +558,9 @@ $(function(){
 
     setTimeout(function(){
 
-      QUnit.assert.ok(!w.invalidRadio, 'required radio button did not submit');
+      QUnit.assert.equal(w.invalidRadio, 0, 'required radio button did not submit');
 
-      QUnit.assert.ok(w.invalidRadioError, 'unchecked radio caused validation error');
+      QUnit.assert.equal(w.invalidRadioError, true, 'unchecked radio caused validation error');
 
       QUnit.start();
 
