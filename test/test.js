@@ -226,7 +226,7 @@ $(function(){
 
     w.noSubmissionSuccess = false;
 
-    $('#form9 .email').val('form6@test.com');
+    $('#form9 .email').val('form9@test.com');
 
     $('#form9 .name').val('jane doe');
 
@@ -244,9 +244,10 @@ $(function(){
 
       w.noSubmissionSubmit = true;
 
-    }).on('success', function(){
+    }).on('success', function(returnData){
 
       w.noSubmissionSuccess = true;
+      w.noSubmissionSuccessReturnData = returnData.requestPayload;
 
     }).run({
 
@@ -261,6 +262,8 @@ $(function(){
       QUnit.assert.ok(!w.noSubmissionSubmit, 'form didn\'t POST');
 
       QUnit.assert.ok(w.noSubmissionSuccess, 'success function executed');
+
+      QUnit.assert.equal(w.noSubmissionSuccessReturnData.email, 'form9@test.com', 'success no post returnData is good');
 
       QUnit.start();
 

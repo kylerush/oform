@@ -310,8 +310,8 @@
           if(typeof instance.options.success === 'function'){
 
             instance.options.success({
-              event: null,
-              data: returnData
+              XHR: null,
+              requestPayload: returnData
             });
 
           }
