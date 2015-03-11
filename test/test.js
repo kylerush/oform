@@ -516,4 +516,44 @@ $(function(){
 
   });
 
+  QUnit.asyncTest('checkbox validation', function(){
+
+    QUnit.expect(2);
+
+    w.invalidRadio = false;
+
+    w.invalidRadioError = false;
+
+    new Oform({
+
+      selector: '#form10'
+
+    }).on('load', function(){
+
+      w.invalidRadio = true;
+
+    }).on('validationerror', function(){
+
+      w.invalidRadioError = true;
+
+    }).run({
+
+      target: document.getElementById('#form10'),
+
+      preventDefault: function(){}
+
+    });
+
+    setTimeout(function(){
+
+      QUnit.assert.ok(!w.invalidRadio, 'required radio button did not submit');
+
+      QUnit.assert.ok(w.invalidRadioError, 'unchecked radio caused validation error');
+
+      QUnit.start();
+
+    }, 500);
+
+  });
+
 });
