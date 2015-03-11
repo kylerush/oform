@@ -1,6 +1,6 @@
 {
   "name": "oForm",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "A JavaScript library for forms.",
   "main": "index.js",
   "scripts": {

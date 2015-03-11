@@ -149,7 +149,7 @@
 
             } else {
 
-              if( instance.options.validate[type](item) ){
+              if( instance.options.validate[type](item, instance.options.selector) ){
 
                 instance.options.adjustClasses(item, true);
 
@@ -428,6 +428,27 @@
             checkbox: function(checkbox){
 
               return checkbox.checked ? true : false;
+
+            },
+
+            radio: function(radio, contextSelector){
+
+              var name = radio.getAttribute('name'),
+                  radioGroup = arrayify( document.querySelectorAll(contextSelector + ' input[name="' + name + '"]') ),
+                  oneRadioIsChecked = false,
+                  m;
+
+              for(m = 0; m < radioGroup.length; m++){
+
+                if(radioGroup[m].checked){
+
+                  oneRadioIsChecked = true;
+
+                }
+
+              }
+
+              return oneRadioIsChecked;
 
             },
 
