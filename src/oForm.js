@@ -71,6 +71,7 @@
       var before,
       invalidFields,
       inputs,
+      selects,
       data,
       returnData;
 
@@ -99,122 +100,127 @@
       if(before){
 
         inputs = d.querySelectorAll(instance.options.selector + ' input');
+        selects = d.querySelectorAll(instance.options.selector + ' select');
 
         inputs = arrayify(inputs);
-
         var j;
 
+        //capture all the 'inputs' in a form, including input fields, radio selectors, checkboxes
         for(j = 0; j < inputs.length; j++){
-
           var item,
           type,
           name,
           value;
 
           item = inputs[j];
-
           type = item.getAttribute('type');
-
           name = item.getAttribute('name');
-
           value = item.value;
-
           if( item.hasAttribute('required') ){
-
             if(
-
               typeof instance.options.customValidation === 'object' &&
-
               typeof instance.options.customValidation[name] === 'function'
-
             ){
-
               if( instance.options.customValidation[name](item) ){
-
                 instance.options.adjustClasses(item, true);
-
               } else {
-
                 instance.options.adjustClasses(item, false);
-
                 if(typeof instance.options.validationerror === 'function'){
-
                   instance.options.validationerror(item);
-
                 }
-
                 invalidFields++;
-
               }
-
             } else {
-
               if( instance.options.validate[type](item) ){
-
                 instance.options.adjustClasses(item, true);
-
               } else {
-
                 instance.options.adjustClasses(item, false);
-
                 if(typeof instance.options.validationerror === 'function'){
-
                   instance.options.validationerror(item);
-
                 }
-
                 invalidFields++;
-
               }
-
             }
-
           }
-
           if(name) {
+            if (type === 'radio'){
+              if(item.checked){
+                data.push( name + '=' +  encodeURIComponent(value) );
+                returnData[name] = item.value;
+              }
+            }
 
             if(type === 'checkbox'){
-
               if(item.checked){
-
                 data.push( name + '=' + encodeURIComponent(value) );
-
                 returnData[name] = value;
-
               }
-
             } else {
-
               data.push( name + '=' + encodeURIComponent(value) );
-
               returnData[name] = value;
-
             }
-
           }
+        }
 
+        //Capture all the 'selects' in a form
+        for(j = 0; j < selects.length; j++){
+
+          var selectItem = selects[j];
+          var selectType = selectItem.getAttribute('type');
+          var selectName = selectItem.getAttribute('name');
+          var selectValue = selectItem.value;
+          if( selectItem.hasAttribute('required') ){
+            if(
+              typeof instance.options.customValidation === 'object' &&
+              typeof instance.options.customValidation[selectName] === 'function'
+            ){
+              if( instance.options.customValidation[selectName](selectItem) ){
+                instance.options.adjustClasses(selectItem, true);
+              } else {
+                instance.options.adjustClasses(selectItem, false);
+                if(typeof instance.options.validationerror === 'function'){
+                  instance.options.validationerror(selectItem);
+                }
+                invalidFields++;
+              }
+            } else {
+              if( instance.options.validate[selectType](selectItem) ){
+                instance.options.adjustClasses(selectItem, true);
+              } else {
+                instance.options.adjustClasses(selectItem, false);
+                if(typeof instance.options.validationerror === 'function'){
+                  instance.options.validationerror(selectItem);
+                }
+                invalidFields++;
+              }
+            }
+          }
+          if(selectName) {
+            if(selectType === 'checkbox'){
+              if(selectItem.checked){
+                data.push( selectName + '=' + encodeURIComponent(selectValue) );
+                returnData[selectName] = selectValue;
+              }
+            } else {
+              data.push( selectName + '=' + encodeURIComponent(selectValue) );
+              returnData[selectName] = selectValue;
+            }
+          }
         }
 
         data = data.join('&');
-
       }
 
       if(invalidFields === 0 && before){
-
         if(typeof instance.options.bodyErrorClass === 'string'){
-
           instance.options.removeClass( document.getElementsByTagName('body')[0], instance.options.bodyErrorClass );
-
         }
-
         if(
           document.querySelector(instance.options.selector).attributes.method &&
           document.querySelector(instance.options.selector).attributes.method.specified
         ){
-
           //run submit function
           var request = new XMLHttpRequest();
-
           if(typeof instance.options.xhr === 'object'){
 
             var loadFunction = function(){
